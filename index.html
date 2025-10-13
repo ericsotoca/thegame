@@ -298,5 +298,67 @@
             renderFingers();
         });
 
-        function updateTouches(touchList) {
-            touches = Array.from(touchList).map((t, i) => ({id: t.i
+        
+    function updateTouches(touchList) {
+            touches = Array.from(touchList).map((t, i) => ({id: t.identifier, x: t.clientX, y: t.clientY, number: i + 1}));
+            renderFingers();
+            document.getElementById('selectionBtn').disabled = touches.length < currentChallenge.n;
+        }
+
+        function renderFingers() {
+            touchArea.innerHTML = '';
+            touches.forEach(t => {
+                const finger = document.createElement('div');
+                finger.classList.add('finger');
+                finger.style.left = `${t.x}px`;
+                finger.style.top = `${t.y}px`;
+                finger.textContent = t.number;
+                touchArea.appendChild(finger);
+            });
+        }
+
+        function startSelectionCountdown() {
+            let count = 5;
+            const cdDisplay = document.createElement('div');
+            cdDisplay.classList.add('countdown-display');
+            touchArea.appendChild(cdDisplay);
+            const interval = setInterval(() => {
+                cdDisplay.textContent = count;
+                count--;
+                if (count < 0) {
+                    clearInterval(interval);
+                    cdDisplay.remove();
+                    selectProtagonists();
+                }
+            }, 1000);
+        }
+
+        function selectProtagonists() {
+            const num = currentChallenge.n;
+            if (touches.length < num) {
+                alert(translations[selectedLanguage].minPlayers);
+                return;
+            }
+            let candidates = [...touches];
+            const winners = [];
+            for (let i = 0; i < num; i++) {
+                const rand = Math.floor(Math.random() * candidates.length);
+                winners.push(candidates[rand]);
+                candidates.splice(rand, 1);
+            }
+            document.querySelectorAll('.finger').forEach(f => f.classList.add('loser'));
+            winners.forEach(w => {
+                const winFinger = Array.from(document.querySelectorAll('.finger')).find(f => f.textContent == w.number);
+                winFinger.classList.remove('loser');
+                winFinger.classList.add('winner');
+            });
+            document.getElementById('selectionBtn').style.display = 'none';
+            document.getElementById('continueBtn').style.display = 'block';
+        }
+
+        document.getElementById('playerCount').addEventListener('input', updateStartButton);
+        selectLanguage('fr');
+        updateStartButton();
+    </script>
+</body>
+</html>
