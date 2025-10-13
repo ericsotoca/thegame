@@ -1,1 +1,249 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jeu de Défis Consentis</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, #667eea, #764ba2); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; }
+        .container { background: white; border-radius: 20px; padding: 30px; max-width: 600px; width: 100%; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        .language-selector { display: flex; gap: 10px; justify-content: center; margin-bottom: 20px; }
+        .language-option { width: 40px; height: 40px; border: 2px solid #e0e0e0; border-radius: 50%; cursor: pointer; transition: all 0.2s; background: white; display: flex; align-items: center; justify-content: center; }
+        .language-option:hover { border-color: #667eea; transform: scale(1.1); }
+        .language-option.selected { border-color: #667eea; background: #667eea; }
+        .language-flag { font-size: 1.5em; }
+        h1 { color: #667eea; text-align: center; margin-bottom: 20px; font-size: 1.8em; }
+        .screen { display: none; }
+        .screen.active { display: block; }
+        .input-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; color: #333; font-weight: 600; }
+        input[type="number"] { width: 100%; padding: 10px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 16px; }
+        input[type="number"]:focus { outline: none; border-color: #667eea; }
+        button { background: #667eea; color: white; border: none; padding: 12px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; width: 100%; margin-top: 15px; transition: background 0.3s; }
+        button:hover { background: #5568d3; }
+        button:disabled { background: #ccc; cursor: not-allowed; }
+        .challenge-card { background: linear-gradient(135deg, #f093fb, #f5576c); color: white; padding: 30px; border-radius: 10px; text-align: center; margin: 20px 0; font-size: 1.2em; min-height: 150px; display: flex; align-items: center; justify-content: center; }
+        .consent-options { display: flex; gap: 10px; margin-top: 20px; }
+        .consent-btn { flex: 1; padding: 15px; font-size: 16px; border-radius: 8px; transition: transform 0.2s; }
+        .consent-btn:hover { transform: scale(1.05); }
+        .consent-yes { background: #4caf50; }
+        .consent-yes:hover { background: #45a049; }
+        .consent-no { background: #f44336; }
+        .consent-no:hover { background: #da190b; }
+        .instruction { text-align: center; font-size: 1em; color: #666; margin: 15px 0; padding: 10px; background: #f5f5f5; border-radius: 8px; }
+        .warning { background: #fff3cd; color: #856404; padding: 10px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid #ffc107; }
+        .result-card { padding: 30px; border-radius: 10px; text-align: center; margin: 20px 0; font-size: 1.2em; min-height: 150px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .result-accepted { background: linear-gradient(135deg, #4caf50, #45a049); color: white; }
+        .result-refused { background: linear-gradient(135deg, #f44336, #da190b); color: white; }
+        .counter { font-size: 2em; font-weight: bold; color: #667eea; text-align: center; margin: 15px 0; }
+        .info { text-align: center; color: #666; margin-top: 15px; font-size: 0.9em; }
+        .intensity-selector { display: flex; gap: 10px; justify-content: center; margin: 15px 0; }
+        .intensity-option { width: 50px; height: 50px; border: 2px solid #e0e0e0; border-radius: 50%; cursor: pointer; transition: all 0.2s; background: white; display: flex; align-items: center; justify-content: center; position: relative; }
+        .intensity-option:hover { border-color: #667eea; background: #f8f9ff; transform: scale(1.1); }
+        .intensity-option.selected { border-color: #667eea; background: #667eea; transform: scale(1.15); }
+        .intensity-icon { font-size: 1.5em; }
+        .intensity-name { position: absolute; bottom: -25px; left: 50%; transform: translateX(-50%); font-size: 0.8em; color: #667eea; opacity: 0; transition: opacity 0.2s; }
+        .intensity-option:hover .intensity-name { opacity: 1; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="language-selector">
+            <div class="language-option selected" data-lang="fr" onclick="selectLanguage('fr')"><span class="language-flag">🇫🇷</span></div>
+            <div class="language-option" data-lang="en" onclick="selectLanguage('en')"><span class="language-flag">🇬🇧</span></div>
+        </div>
+        <h1 id="mainTitle">🎭 Jeu de Défis Consentis</h1>
+        <div class="screen active" id="setupScreen">
+            <div class="warning" id="warningText">⚠️ Ce jeu est destiné aux adultes consentants. Tous les participants doivent avoir 18 ans ou plus.</div>
+            <div class="input-group">
+                <label for="intensity" id="intensityLabel">Niveau d'intensité :</label>
+                <div class="intensity-selector">
+                    <div class="intensity-option" data-level="soft" onclick="selectIntensity('soft')"><span class="intensity-icon">😊</span><span class="intensity-name" id="intensitySoftName">Doux</span></div>
+                    <div class="intensity-option" data-level="medium" onclick="selectIntensity('medium')"><span class="intensity-icon">🔥</span><span class="intensity-name" id="intensityMediumName">Chaud</span></div>
+                    <div class="intensity-option" data-level="hot" onclick="selectIntensity('hot')"><span class="intensity-icon">🌶️</span><span class="intensity-name" id="intensityHotName">Torride</span></div>
+                </div>
+            </div>
+            <div class="input-group">
+                <label for="playerCount" id="playerCountLabel">Nombre de participants :</label>
+                <input type="number" id="playerCount" min="2" max="20" value="2" oninput="this.value = Math.max(2, Math.min(20, this.value))">
+            </div>
+            <button onclick="startGame()" id="startBtn" disabled>Commencer le jeu</button>
+            <div class="info" id="infoAnonymous">Le smartphone circulera entre les participants de façon anonyme.</div>
+        </div>
+        <div class="screen" id="challengeScreen">
+            <div class="challenge-card" id="challengeText"></div>
+            <div class="instruction" id="passPhoneText">Passez le téléphone à chaque participant, un par un.</div>
+            <button onclick="startVoting()" id="startVotingBtn">Commencer le vote anonyme</button>
+        </div>
+        <div class="screen" id="votingScreen">
+            <div class="counter" id="voteCounter"></div>
+            <div class="instruction" id="votingInstruction"><strong>Participant, répondez en toute confidentialité.</strong><br>Acceptez-vous ce défi ?</div>
+            <div class="consent-options">
+                <button class="consent-btn consent-yes" onclick="vote(true)" id="acceptBtn">✓ J'accepte</button>
+                <button class="consent-btn consent-no" onclick="vote(false)" id="refuseBtn">✗ Je refuse</button>
+            </div>
+        </div>
+        <div class="screen" id="resultScreen">
+            <div id="resultDisplay" class="result-card"></div>
+            <button onclick="nextRound()" id="nextBtn">Prochain défi</button>
+            <button onclick="resetGame()" id="newGameBtn" style="background: #f44336;">Nouvelle partie</button>
+        </div>
+        <div class="info" id="infoConsent">Le consentement peut être retiré à tout moment.</div>
+    </div>
+    <script>
+        let playerCount = 0, currentChallenge = '', currentVote = 0, allAccepted = true, selectedIntensity = null, selectedLanguage = 'fr', usedChallenges = [];
+        const translations = {
+            fr: {
+                title: "🎭 Jeu de Défis Consentis", warning: "⚠️ Ce jeu est destiné aux adultes consentants. Tous les participants doivent avoir 18 ans ou plus.",
+                intensityLabel: "Niveau d'intensité :", intensitySoft: "Doux", intensityMedium: "Chaud", intensityHot: "Torride", playerCountLabel: "Nombre de participants :",
+                startBtn: "Commencer le jeu", infoAnonymous: "Le smartphone circulera entre les participants de façon anonyme.", passPhone: "Passez le téléphone à chaque participant, un par un.",
+                startVoting: "Commencer le vote anonyme", participant: "Participant, répondez en toute confidentialité.", acceptQuestion: "Acceptez-vous ce défi ?",
+                acceptBtn: "✓ J'accepte", refuseBtn: "✗ Je refuse", challengeAccepted: "DÉFI ACCEPTÉ !", allAgree: "Tous les participants sont d'accord",
+                challengeRefused: "DÉFI REFUSÉ", someoneRefused: "Au moins un participant n'est pas d'accord", consentNeeded: "Le consentement de tous est nécessaire.",
+                challengeToComplete: "Le défi à réaliser :", nextChallenge: "Prochain défi", newGame: "Nouvelle partie", infoConsent: "Le consentement peut être retiré à tout moment.",
+                selectIntensity: "Veuillez sélectionner un niveau d'intensité !", minPlayers: "Il faut au moins 2 participants !"
+            },
+            en: {
+                title: "🎭 Consent Challenge Game", warning: "⚠️ This game is for consenting adults. All participants must be 18+.",
+                intensityLabel: "Intensity level:", intensitySoft: "Soft", intensityMedium: "Hot", intensityHot: "Spicy", playerCountLabel: "Number of participants:",
+                startBtn: "Start game", infoAnonymous: "The phone will circulate among participants anonymously.", passPhone: "Pass the phone to each participant, one by one.",
+                startVoting: "Start anonymous voting", participant: "Participant, answer confidentially.", acceptQuestion: "Do you accept this challenge?",
+                acceptBtn: "✓ I accept", refuseBtn: "✗ I refuse", challengeAccepted: "CHALLENGE ACCEPTED!", allAgree: "All participants agree",
+                challengeRefused: "CHALLENGE REFUSED", someoneRefused: "At least one participant disagrees", consentNeeded: "Everyone's consent is required.",
+                challengeToComplete: "Challenge to complete:", nextChallenge: "Next challenge", newGame: "New game", infoConsent: "Consent can be withdrawn at any time.",
+                selectIntensity: "Please select an intensity level!", minPlayers: "At least 2 participants are required!"
+            }
+        };
+        const challenges = {
+            soft: {
+                fr: ["Massez les épaules de la personne à votre gauche pendant 30 secondes", "Faites un compliment sincère à chaque participant", "Dansez de manière suggestive pendant 30 secondes"],
+                en: ["Massage the shoulders of the person on your left for 30 seconds", "Give a sincere compliment to each participant", "Dance suggestively for 30 seconds"]
+            },
+            medium: {
+                fr: ["Embrassez doucement la joue de la personne à votre droite", "Racontez une anecdote romantique", "Faites un clin d'œil charmeur à chaque participant"],
+                en: ["Gently kiss the cheek of the person on your right", "Share a romantic anecdote", "Give a charming wink to each participant"]
+            },
+            hot: {
+                fr: ["Chuchotez une phrase séductrice à l'oreille d'un participant", "Improvisez une danse sensuelle à deux", "Partagez un fantasme (respectueux)"],
+                en: ["Whisper a seductive phrase in a participant's ear", "Improvise a sensual dance with a partner", "Share a respectful fantasy"]
+            }
+        };
 
+        function selectLanguage(lang) {
+            selectedLanguage = lang;
+            document.querySelectorAll('.language-option').forEach(opt => opt.classList.toggle('selected', opt.dataset.lang === lang));
+            updateInterface();
+        }
+
+        function selectIntensity(level) {
+            selectedIntensity = level;
+            document.querySelectorAll('.intensity-option').forEach(opt => opt.classList.toggle('selected', opt.dataset.level === level));
+            updateStartButton();
+        }
+
+        function updateStartButton() {
+            const startBtn = document.getElementById('startBtn');
+            playerCount = parseInt(document.getElementById('playerCount').value) || 0;
+            startBtn.disabled = !selectedIntensity || playerCount < 2;
+        }
+
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(screen => screen.classList.toggle('active', screen.id === screenId));
+        }
+
+        function getRandomChallenge() {
+            let challengeList = challenges[selectedIntensity]?.[selectedLanguage] || [];
+            if (challengeList.length === 0) {
+                alert(translations[selectedLanguage].selectIntensity);
+                return null;
+            }
+            challengeList = challengeList.filter(c => !usedChallenges.includes(c));
+            if (challengeList.length === 0) {
+                usedChallenges = [];
+                challengeList = challenges[selectedIntensity][selectedLanguage];
+            }
+            const randomIndex = Math.floor(Math.random() * challengeList.length);
+            const challenge = challengeList[randomIndex];
+            usedChallenges.push(challenge);
+            return challenge;
+        }
+
+        function updateInterface() {
+            const t = translations[selectedLanguage];
+            document.getElementById('mainTitle').textContent = t.title;
+            document.getElementById('warningText').textContent = t.warning;
+            document.getElementById('intensityLabel').textContent = t.intensityLabel;
+            document.getElementById('intensitySoftName').textContent = t.intensitySoft;
+            document.getElementById('intensityMediumName').textContent = t.intensityMedium;
+            document.getElementById('intensityHotName').textContent = t.intensityHot;
+            document.getElementById('playerCountLabel').textContent = t.playerCountLabel;
+            document.getElementById('startBtn').textContent = t.startBtn;
+            document.getElementById('infoAnonymous').textContent = t.infoAnonymous;
+            document.getElementById('passPhoneText').textContent = t.passPhone;
+            document.getElementById('startVotingBtn').textContent = t.startVoting;
+            document.getElementById('votingInstruction').innerHTML = `<strong>${t.participant}</strong><br>${t.acceptQuestion}`;
+            document.getElementById('acceptBtn').textContent = t.acceptBtn;
+            document.getElementById('refuseBtn').textContent = t.refuseBtn;
+            document.getElementById('nextBtn').textContent = t.nextChallenge;
+            document.getElementById('newGameBtn').textContent = t.newGame;
+            document.getElementById('infoConsent').textContent = t.infoConsent;
+        }
+
+        function startGame() {
+            playerCount = parseInt(document.getElementById('playerCount').value) || 0;
+            if (playerCount < 2) return alert(translations[selectedLanguage].minPlayers);
+            if (!selectedIntensity) return alert(translations[selectedLanguage].selectIntensity);
+            currentChallenge = getRandomChallenge();
+            if (!currentChallenge) return;
+            document.getElementById('challengeText').textContent = currentChallenge;
+            currentVote = 0;
+            allAccepted = true;
+            showScreen('challengeScreen');
+        }
+
+        function startVoting() {
+            currentVote = 0;
+            allAccepted = true;
+            document.getElementById('voteCounter').textContent = `0/${playerCount}`;
+            showScreen('votingScreen');
+        }
+
+        function vote(accepted) {
+            currentVote++;
+            if (!accepted) allAccepted = false;
+            document.getElementById('voteCounter').textContent = `${currentVote}/${playerCount}`;
+            if (currentVote < playerCount) return;
+            showScreen('resultScreen');
+            const resultDisplay = document.getElementById('resultDisplay');
+            resultDisplay.className = `result-card ${allAccepted ? 'result-accepted' : 'result-refused'}`;
+            resultDisplay.innerHTML = allAccepted
+                ? `<h3>${translations[selectedLanguage].challengeAccepted}</h3><p>${translations[selectedLanguage].allAgree}</p><p>${translations[selectedLanguage].challengeToComplete} ${currentChallenge}</p>`
+                : `<h3>${translations[selectedLanguage].challengeRefused}</h3><p>${translations[selectedLanguage].someoneRefused}</p><p>${translations[selectedLanguage].consentNeeded}</p>`;
+        }
+
+        function nextRound() {
+            currentChallenge = getRandomChallenge();
+            if (!currentChallenge) return;
+            document.getElementById('challengeText').textContent = currentChallenge;
+            showScreen('challengeScreen');
+        }
+
+        function resetGame() {
+            playerCount = 0;
+            currentChallenge = '';
+            currentVote = 0;
+            allAccepted = true;
+            selectedIntensity = null;
+            usedChallenges = [];
+            document.getElementById('playerCount').value = 2;
+            document.querySelectorAll('.intensity-option').forEach(opt => opt.classList.remove('selected'));
+            showScreen('setupScreen');
+            updateStartButton();
+        }
+
+        document.getElementById('playerCount').addEventListener('input', updateStartButton);
+        selectLanguage('fr');
+    </script>
+</body>
+</html>
