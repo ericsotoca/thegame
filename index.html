@@ -267,7 +267,7 @@ function adjustPlayerCount(delta) {
 
 function updateStartButton() {
   const startBtn = document.getElementById('startBtn');
-  const playerInput = document.getElementById('playerCount');
+  const playerInput = document.getElementById('playerCount'); // ✅ sans espace
   playerCount = parseInt(playerInput.value) || 0;
   if (playerCount < 2 || playerCount > 20) {
     playerInput.value = 2;
@@ -307,10 +307,10 @@ function updateInterface() {
   document.getElementById('intensitySoftName').textContent = t.intensitySoft;
   document.getElementById('intensityMediumName').textContent = t.intensityMedium;
   document.getElementById('intensityHotName').textContent = t.intensityHot;
-  document.getElementById('playerCountLabel').textContent = t.playerCountLabel;
+  document.getElementById('playerCountLabel').textContent = t.playerCountLabel; // ✅
   document.getElementById('startBtn').textContent = t.startBtn;
   document.getElementById('infoAnonymous').textContent = t.infoAnonymous;
-  document.getElementById('passPhoneText').textContent = t.passPhone;
+  document.getElementById('passPhoneText').textContent = t.passPhone; // ✅
   document.getElementById('startVotingBtn').textContent = t.startVoting;
   document.getElementById('votingInstruction').innerHTML = `<strong>${t.participant}</strong><br>${t.acceptQuestion}`;
   document.getElementById('acceptBtn').textContent = t.acceptBtn;
@@ -324,10 +324,10 @@ function updateInterface() {
 }
 
 function startGame() {
-  playerCount = parseInt(document.getElementById('playerCount').value) || 0;
+  playerCount = parseInt(document.getElementById('playerCount').value) || 0; // ✅
   if (playerCount < 2 || playerCount > 20) {
     alert(translations[selectedLanguage].minPlayers);
-    document.getElementById('playerCount').value = 2;
+    document.getElementById('playerCount').value = 2; // ✅
     playerCount = 2;
     return;
   }
@@ -356,7 +356,7 @@ function vote(accepted) {
   document.getElementById('voteCounter').textContent = `${currentVote}/${playerCount}`;
   if (currentVote < playerCount) return;
   showScreen('resultScreen');
-  const resultDisplay = document.getElementById('resultDisplay');
+  const resultDisplay = document.getElementById('resultDisplay'); // ✅
   resultDisplay.className = `result-card ${allAccepted ? 'result-accepted' : 'result-refused'}`;
   resultDisplay.innerHTML = allAccepted
     ? `<h3>${translations[selectedLanguage].challengeAccepted}</h3><p>${translations[selectedLanguage].allAgree}</p><p>${translations[selectedLanguage].challengeToComplete} ${currentChallenge.t}</p>`
@@ -380,7 +380,7 @@ function resetGame() {
   selectedIntensity = null;
   usedChallenges = [];
   touches = [];
-  document.getElementById('playerCount').value = 2;
+  document.getElementById('playerCount').value = 2; // ✅
   document.querySelectorAll('.intensity-option').forEach(opt => opt.classList.remove('selected'));
   showScreen('setupScreen');
   updateStartButton();
@@ -437,7 +437,7 @@ function renderFingers() {
 function startSelectionCountdown() {
   let count = 5;
   const cdDisplay = document.createElement('div');
-  cdDisplay.classList.add('countdown-display');
+  cdDisplay.classList.add('countdown-display'); // ✅
   touchArea.appendChild(cdDisplay);
   const interval = setInterval(() => {
     cdDisplay.textContent = count;
@@ -464,5 +464,4 @@ function selectProtagonists() {
     winners.push(candidates[rand]);
     candidates.splice(rand, 1);
   }
-  document.querySelectorAll('.finger').forEach(f => f.classList.add('loser'));
-  winners.forEach(w => 
+  document.querySelectorAll('.finger').forEach(f =
