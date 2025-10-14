@@ -464,4 +464,23 @@ function selectProtagonists() {
     winners.push(candidates[rand]);
     candidates.splice(rand, 1);
   }
-  document.querySelectorAll('.finger').forEach(f =
+  document.querySelectorAll('.finger').forEach(f => f.classList.add('loser'));
+  winners.forEach(w => {
+    const winFinger = Array.from(document.querySelectorAll('.finger')).find(f => f.textContent == w.number);
+    if (winFinger) {
+      winFinger.classList.remove('loser');
+      winFinger.classList.add('winner');
+    }
+  });
+  document.getElementById('selectionBtn').style.display = 'none';
+  document.getElementById('continueBtn').style.display = 'block';
+}
+
+// Initialisation
+selectLanguage('fr');
+updateStartButton();
+</script>
+</body>
+</html>
+
+
