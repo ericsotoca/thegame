@@ -18,7 +18,7 @@ h1{color:#667eea;text-align:center;margin-bottom:15px;font-size:1.5em}
 .screen.active{display:block}
 .input-group{margin-bottom:10px}
 label{display:block;margin-bottom:5px;color:#333;font-weight:600}
-input[type=number]{width:100%;padding:8px;border:2px solid#e0e0e0;border-radius:6px;font-size:14px}
+input[type=number]{width:100%;padding:8px;border:2px solid#e0e0e0;border-radius:6px;font-size:14px;text-align:center}
 input[type=number]:focus{outline:0;border-color:#667eea}
 button{background:#667eea;color:#fff;border:0;padding:10px;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;width:100%;margin-top:10px;transition:background .2s}
 button:hover{background:#5568d3}
@@ -83,7 +83,11 @@ button:disabled{background:#ccc;cursor:not-allowed}
     </div>
     <div class="input-group">
       <label for="playerCount" id="playerCountLabel">Participants:</label>
-      <input type="number" id="playerCount" value="2">
+      <div style="display:flex;gap:8px;align-items:center;">
+        <button type="button" onclick="adjustPlayerCount(-1)" style="width:30px;height:30px;background:#f0f0f0;border:1px solid #ccc;border-radius:6px;">−</button>
+        <input type="number" id="playerCount" value="2" min="2" max="20">
+        <button type="button" onclick="adjustPlayerCount(1)" style="width:30px;height:30px;background:#f0f0f0;border:1px solid #ccc;border-radius:6px;">+</button>
+      </div>
     </div>
     <button onclick="startGame()" id="startBtn" disabled>Commencer</button>
     <div class="info" id="infoAnonymous">Smartphone circule anonymement</div>
@@ -248,6 +252,16 @@ function selectIntensity(level) {
   document.querySelectorAll('.intensity-option').forEach(opt =>
     opt.classList.toggle('selected', opt.dataset.level === level)
   );
+  updateStartButton();
+}
+
+function adjustPlayerCount(delta) {
+  const input = document.getElementById('playerCount');
+  let value = parseInt(input.value) || 2;
+  value += delta;
+  if (value < 2) value = 2;
+  if (value > 20) value = 20;
+  input.value = value;
   updateStartButton();
 }
 
@@ -451,20 +465,4 @@ function selectProtagonists() {
     candidates.splice(rand, 1);
   }
   document.querySelectorAll('.finger').forEach(f => f.classList.add('loser'));
-  winners.forEach(w => {
-    const winFinger = Array.from(document.querySelectorAll('.finger')).find(f => f.textContent == w.number);
-    if (winFinger) {
-      winFinger.classList.remove('loser');
-      winFinger.classList.add('winner');
-    }
-  });
-  document.getElementById('selectionBtn').style.display = 'none';
-  document.getElementById('continueBtn').style.display = 'block';
-}
-
-document.getElementById('playerCount').addEventListener('input', updateStartButton);
-selectLanguage('fr');
-updateStartButton();
-</script>
-</body>
-    </html>
+  winners.forEach(w => 
