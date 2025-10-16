@@ -3,14 +3,43 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Jeu de Défis Consentis v3 - Sélection Séquentielle</title>
+<title>Jeu de Défis Consentis v4 - Bouton Accueil</title>
 <style>
     /* ═══════════════════════════════════════════════════════════════
        STYLES GLOBAUX
        ═══════════════════════════════════════════════════════════════ */
     *{margin:0;padding:0;box-sizing:border-box}
     body{font-family:'Segoe UI',sans-serif;background:linear-gradient(135deg,#667eea,#764ba2);min-height:100vh;display:flex;justify-content:center;align-items:center;padding:10px;touch-action:none;overflow:hidden}
-    .container{background:#fff;border-radius:15px;padding:20px;max-width:500px;width:100%;box-shadow:0 5px 20px rgba(0,0,0,.3)}
+    .container{background:#fff;border-radius:15px;padding:20px;max-width:500px;width:100%;box-shadow:0 5px 20px rgba(0,0,0,.3);position:relative}
+
+    /* ═══════════════════════════════════════════════════════════════
+       BOUTON RETOUR ACCUEIL
+       ═══════════════════════════════════════════════════════════════ */
+    #homeBtn {
+        position: fixed;
+        top: 15px;
+        right: 15px;
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.9);
+        color: #667eea;
+        border: 2px solid #667eea;
+        font-size: 1.5em;
+        cursor: pointer;
+        z-index: 1000;
+        display: none; /* Caché par défaut, géré par JS */
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        transition: all 0.2s ease;
+        padding: 0;
+        margin: 0;
+    }
+    #homeBtn:hover {
+        transform: scale(1.1);
+        background: white;
+    }
 
     /* ═══════════════════════════════════════════════════════════════
        ÉLÉMENTS D'INTERFACE COMMUNS
@@ -74,6 +103,7 @@
 </style>
 </head>
 <body>
+<button id="homeBtn" onclick="resetGame()" title="Retour à l'accueil">🏠</button>
 <div class="container">
   <div class="language-selector">
     <div class="language-option selected" data-lang="fr" onclick="selectLanguage('fr')"><span class="language-flag">🇫🇷</span></div>
@@ -145,7 +175,6 @@ let selectedLanguage = 'fr';
 let usedChallenges = [];
 let touches = [];
 let countdownTimer = null;
-// Variables pour la sélection séquentielle
 let protagonistsToSelect = 0;
 let selectedProtagonists = [];
 
@@ -283,7 +312,15 @@ function updateStartButton() {
 }
 
 function showScreen(screenId) {
-  document.querySelectorAll('.screen').forEach(screen=>screen.classList.toggle('active', screen.id === screenId));
+    document.querySelectorAll('.screen').forEach(screen => screen.classList.toggle('active', screen.id === screenId));
+    
+    // Gérer la visibilité du bouton "Accueil"
+    const homeBtn = document.getElementById('homeBtn');
+    if (screenId === 'setupScreen') {
+        homeBtn.style.display = 'none';
+    } else {
+        homeBtn.style.display = 'flex'; // Utiliser flex pour centrer l'icône
+    }
 }
 
 function getRandomChallenge() {
@@ -361,6 +398,7 @@ function resetGame() {
   selectedProtagonists = [];
   document.getElementById('playerCount').value = 2;
   document.querySelectorAll('.intensity-option.selected').forEach(opt=>opt.classList.remove('selected'));
+  document.querySelectorAll('.language-option').forEach(opt=>opt.classList.toggle('selected', opt.dataset.lang === selectedLanguage));
   showScreen('setupScreen');
   updateStartButton();
 }
