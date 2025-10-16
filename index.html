@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Jeu de Défis Consentis v4 - Bouton Accueil</title>
+<title>Jeu de Défis Consentis v5 - Décompte 5s</title>
 <style>
     /* ═══════════════════════════════════════════════════════════════
        STYLES GLOBAUX
@@ -314,12 +314,11 @@ function updateStartButton() {
 function showScreen(screenId) {
     document.querySelectorAll('.screen').forEach(screen => screen.classList.toggle('active', screen.id === screenId));
     
-    // Gérer la visibilité du bouton "Accueil"
     const homeBtn = document.getElementById('homeBtn');
     if (screenId === 'setupScreen') {
         homeBtn.style.display = 'none';
     } else {
-        homeBtn.style.display = 'flex'; // Utiliser flex pour centrer l'icône
+        homeBtn.style.display = 'flex';
     }
 }
 
@@ -475,7 +474,7 @@ function renderFingers() {
 
 function startSelectionCountdown() {
     document.getElementById('selectionInstruction').textContent = translations[selectedLanguage].selectionInstrInProgress;
-    let count = 3;
+    let count = 5; // <-- Le décompte est maintenant de 5 secondes.
     const cdDisplay = document.createElement('div');
     cdDisplay.className = 'countdown-display';
     touchArea.appendChild(cdDisplay);
