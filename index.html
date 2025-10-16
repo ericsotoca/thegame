@@ -217,6 +217,7 @@ const touchArea = document.getElementById('touchArea');
 const selectionActionBtnGroup = document.getElementById('selectionActionBtnGroup');
 const selectAnotherProtagonistBtn = document.getElementById('selectAnotherProtagonistBtn');
 const continueToNextChallengeBtn = document.getElementById('continueToNextChallengeBtn');
+
 // --- DONNÉES DU JEU (TRADUCTIONS & DÉFIS) ---
 const translations = {
   fr: {
@@ -247,8 +248,8 @@ const translations = {
     selectIntensity: "Veuillez choisir une intensité pour commencer !",
     minPlayers: "Il faut au moins 2 participants !",
     selectProt: "Sélectionner les protagonistes",
-    selectionInstr: "Posez vos doigts sur l'écran !",
-    selectionInstrInProgress: "Gardez vos doigts en place...",
+    selectionInstr: "Posez vos doigts sur l'écran et gardez-les en place pendant 5 secondes !",
+    selectionInstrInProgress: "Gardez vos doigts en place pendant 5 secondes...",
     selectProtagonistOf: "Sélection du protagoniste {current} sur {total}",
     selectNextProt: "Sélectionner le suivant",
     continue: "Continuer",
@@ -284,8 +285,8 @@ const translations = {
     selectIntensity: "Please select an intensity to start!",
     minPlayers: "A minimum of 2 players is required!",
     selectProt: "Select Protagonists",
-    selectionInstr: "Place your fingers on the screen!",
-    selectionInstrInProgress: "Keep your fingers in place...",
+    selectionInstr: "Place your fingers on the screen and keep them there for 5 seconds!",
+    selectionInstrInProgress: "Keep your fingers in place for 5 seconds...",
     selectProtagonistOf: "Selecting protagonist {current} of {total}",
     selectNextProt: "Select Next",
     continue: "Continue",
@@ -321,8 +322,8 @@ const translations = {
     selectIntensity: "Por favor, escolha uma intensidade para começar!",
     minPlayers: "São necessários pelo menos 2 participantes!",
     selectProt: "Selecionar Protagonistas",
-    selectionInstr: "Coloquem os dedos no ecrã!",
-    selectionInstrInProgress: "Mantenham os dedos no sítio...",
+    selectionInstr: "Coloquem os dedos no ecrã e mantenham-nos lá por 5 segundos!",
+    selectionInstrInProgress: "Mantenham os dedos no lugar por 5 segundos...",
     selectProtagonistOf: "A selecionar o protagonista {current} de {total}",
     selectNextProt: "Selecionar o Próximo",
     continue: "Continuar",
@@ -331,6 +332,7 @@ const translations = {
     continueToNextChallenge: "Próximo Desafio"
   }
 };
+
 const challenges = {
   soft: {
     fr:[{t:"Faire un compliment sincère à chaque personne.",n:0},{t:"Le groupe doit créer une chorégraphie de 15 secondes.",n:0},{t:"Masser les épaules de la personne à sa gauche pendant 30 secondes.",n:2}],
@@ -348,12 +350,14 @@ const challenges = {
     pt:[{t:"Sussurre uma frase sedutora ao ouvido da pessoa à sua escolha.",n:2},{t:"Partilhe uma fantasia (mantendo o respeito).",n:1},{t:"Faça uma dança sensual de 30 segundos com um parceiro.",n:2}]
   }
 };
+
 // --- FONCTIONS PRINCIPALES DU JEU ---
 function selectLanguage(lang) {
   selectedLanguage = lang;
   document.querySelectorAll('.language-option').forEach(opt=>opt.classList.toggle('selected', opt.dataset.lang === lang));
   updateInterface();
 }
+
 function updateInterface() {
   const t = translations[selectedLanguage];
   document.getElementById('mainTitle').textContent = t.title;
@@ -377,11 +381,13 @@ function updateInterface() {
   selectAnotherProtagonistBtn.textContent = t.selectAnotherProtagonist;
   continueToNextChallengeBtn.textContent = t.continueToNextChallenge;
 }
+
 function selectIntensity(level) {
   selectedIntensity = level;
   document.querySelectorAll('.intensity-option').forEach(opt=>opt.classList.toggle('selected', opt.dataset.level === level));
   updateStartButton();
 }
+
 function adjustPlayerCount(delta) {
   const input = document.getElementById('playerCount');
   let value = parseInt(input.value) || 2;
@@ -389,11 +395,13 @@ function adjustPlayerCount(delta) {
   input.value = value;
   updateStartButton();
 }
+
 function updateStartButton() {
   const startBtn = document.getElementById('startBtn');
   playerCount = parseInt(document.getElementById('playerCount').value) || 2;
   startBtn.disabled = !selectedIntensity || playerCount < 2;
 }
+
 function showScreen(screenId) {
     document.querySelectorAll('.screen').forEach(screen => screen.classList.toggle('active', screen.id === screenId));
 
@@ -407,6 +415,7 @@ function showScreen(screenId) {
         selectProtagonistBtn.style.display = 'flex';
     }
 }
+
 function getRandomChallenge() {
   let challengeList = challenges[selectedIntensity]?.[selectedLanguage] || [];
   if (!challengeList.length) return null;
@@ -419,6 +428,7 @@ function getRandomChallenge() {
   usedChallenges.push(challenge.t);
   return challenge;
 }
+
 function startGame() {
   playerCount = parseInt(document.getElementById('playerCount').value);
   if (!selectedIntensity) { alert(translations[selectedLanguage].selectIntensity); return; }
@@ -429,12 +439,14 @@ function startGame() {
   allAccepted = true;
   showScreen('challengeScreen');
 }
+
 function startVoting() {
   currentVote = 0;
   allAccepted = true;
   document.getElementById('voteCounter').textContent = `0 / ${playerCount}`;
   showScreen('votingScreen');
 }
+
 function vote(accepted) {
   currentVote++;
   if (!accepted) allAccepted = false;
@@ -452,6 +464,7 @@ function vote(accepted) {
     document.getElementById('nextBtn').style.display = !needsSelection ? 'block' : 'none';
   }
 }
+
 function nextRound() {
   if(countdownTimer) clearInterval(countdownTimer);
   countdownTimer = null;
@@ -463,6 +476,7 @@ function nextRound() {
   document.getElementById('challengeText').textContent = currentChallenge.t;
   showScreen('challengeScreen');
 }
+
 function resetGame() {
   if (countdownTimer) clearInterval(countdownTimer);
   playerCount = 2;
@@ -482,12 +496,14 @@ function resetGame() {
   showScreen('setupScreen');
   updateStartButton();
 }
+
 // --- LOGIQUE DE SÉLECTION SÉQUENTIELLE ---
 function startSelection() {
     protagonistsToSelect = currentChallenge.n;
     selectedProtagonists = [];
     runSingleSelectionRound();
 }
+
 function startSelectionFromButton() {
     if (!currentChallenge || currentChallenge.n <= 0) {
         alert(translations[selectedLanguage].minPlayers);
@@ -495,6 +511,7 @@ function startSelectionFromButton() {
     }
     startSelection();
 }
+
 function runSingleSelectionRound() {
     showScreen('selectionScreen');
     touches = [];
@@ -508,7 +525,7 @@ function runSingleSelectionRound() {
     const instructionText = translations[selectedLanguage].selectProtagonistOf
         .replace('{current}', selectedProtagonists.length + 1)
         .replace('{total}', protagonistsToSelect);
-    document.getElementById('selectionInstruction').textContent = instructionText;
+    document.getElementById('selectionInstruction').textContent = translations[selectedLanguage].selectionInstr;
 
     touchArea.innerHTML = '';
     selectionActionBtnGroup.style.display = 'none';
@@ -516,10 +533,12 @@ function runSingleSelectionRound() {
     touchArea.addEventListener('touchmove', handleTouch, {passive: false});
     touchArea.addEventListener('touchend', handleTouch, {passive: false});
 }
+
 function handleTouch(e) {
     e.preventDefault();
     updateTouches(e.touches);
 }
+
 function updateTouches(touchList) {
     const rect = touchArea.getBoundingClientRect();
     touches = Array.from(touchList).map((t, i) => ({
@@ -538,11 +557,10 @@ function updateTouches(touchList) {
             countdownDisplay.remove();
             countdownDisplay = null;
         }
-        document.getElementById('selectionInstruction').textContent = translations[selectedLanguage].selectProtagonistOf
-            .replace('{current}', selectedProtagonists.length + 1)
-            .replace('{total}', protagonistsToSelect);
+        document.getElementById('selectionInstruction').textContent = translations[selectedLanguage].selectionInstr;
     }
 }
+
 function renderFingers() {
     const countdownHTML = touchArea.querySelector('.countdown-display')?.outerHTML || '';
     touchArea.innerHTML = countdownHTML;
@@ -556,6 +574,7 @@ function renderFingers() {
         touchArea.appendChild(finger);
     });
 }
+
 function startSelectionCountdown() {
     document.getElementById('selectionInstruction').textContent = translations[selectedLanguage].selectionInstrInProgress;
     let count = 5;
@@ -574,6 +593,7 @@ function startSelectionCountdown() {
         }
     }, 1000);
 }
+
 function selectProtagonist() {
     if (touches.length < 1) {
         alert(translations[selectedLanguage].minPlayersForSelection);
@@ -605,6 +625,7 @@ function selectProtagonist() {
     continueToNextChallengeBtn.style.display = 'block';
     selectionActionBtnGroup.style.display = 'flex';
 }
+
 // --- INITIALISATION DU JEU ---
 document.addEventListener('DOMContentLoaded', () => {
     selectLanguage('fr');
