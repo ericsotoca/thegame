@@ -2,56 +2,75 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Jeu de Défis Consentis</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Jeu de Défis Consentis v2</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Segoe UI',sans-serif;background:linear-gradient(135deg,#667eea,#764ba2);min-height:100vh;display:flex;justify-content:center;align-items:center;padding:10px;touch-action:none}
-.container{background:#fff;border-radius:15px;padding:20px;max-width:500px;width:100%;box-shadow:0 5px 20px rgba(0,0,0,.3)}
-.language-selector{display:flex;gap:8px;justify-content:center;margin-bottom:15px}
-.language-option{width:35px;height:35px;border:2px solid #e0e0e0;border-radius:50%;cursor:pointer;transition:all .2s;background:#fff;display:flex;align-items:center;justify-content:center}
-.language-option:hover{border-color:#667eea;transform:scale(1.1)}
-.language-option.selected{border-color:#667eea;background:#667eea}
-.language-flag{font-size:1.3em}
-h1{color:#667eea;text-align:center;margin-bottom:15px;font-size:1.5em}
-.screen{display:none}
-.screen.active{display:block}
-.input-group{margin-bottom:10px}
-label{display:block;margin-bottom:5px;color:#333;font-weight:600}
-input[type=number]{width:100%;padding:8px;border:2px solid#e0e0e0;border-radius:6px;font-size:14px;text-align:center}
-input[type=number]:focus{outline:0;border-color:#667eea}
-button{background:#667eea;color:#fff;border:0;padding:10px;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;width:100%;margin-top:10px;transition:background .2s}
-button:hover{background:#5568d3}
-button:disabled{background:#ccc;cursor:not-allowed}
-.challenge-card{background:linear-gradient(135deg,#f093fb,#f5576c);color:#fff;padding:20px;border-radius:8px;text-align:center;margin:15px 0;font-size:1.1em;min-height:120px;display:flex;align-items:center;justify-content:center}
-.consent-options{display:flex;gap:8px;margin-top:15px}
-.consent-btn{flex:1;padding:12px;font-size:14px;border-radius:6px;transition:transform .2s}
-.consent-btn:hover{transform:scale(1.05)}
-.consent-yes{background:#4caf50}
-.consent-yes:hover{background:#45a049}
-.consent-no{background:#f44336}
-.consent-no:hover{background:#da190b}
-.instruction{text-align:center;font-size:.9em;color:#666;margin:10px 0;padding:8px;background:#f5f5f5;border-radius:6px}
-.warning{background:#fff3cd;color:#856404;padding:8px;border-radius:6px;margin-bottom:10px;border-left:3px solid #ffc107}
-.result-card{padding:20px;border-radius:8px;text-align:center;margin:15px 0;font-size:1.1em;min-height:120px;display:flex;flex-direction:column;align-items:center;justify-content:center}
-.result-accepted{background:linear-gradient(135deg,#4caf50,#45a049);color:#fff}
-.result-refused{background:linear-gradient(135deg,#f44336,#da190b);color:#fff}
-.counter{font-size:1.8em;font-weight:700;color:#667eea;text-align:center;margin:10px 0}
-.info{text-align:center;color:#666;margin-top:10px;font-size:.8em}
-.intensity-selector{display:flex;gap:8px;justify-content:center;margin:10px 0}
-.intensity-option{width:40px;height:40px;border:2px solid #e0e0e0;border-radius:50%;cursor:pointer;transition:all .2s;background:#fff;display:flex;align-items:center;justify-content:center;position:relative}
-.intensity-option:hover{border-color:#667eea;background:#f8f9ff;transform:scale(1.1)}
-.intensity-option.selected{border-color:#667eea;background:#667eea;transform:scale(1.15)}
-.intensity-icon{font-size:1.3em}
-.intensity-name{position:absolute;bottom:-20px;left:50%;transform:translateX(-50%);font-size:.7em;color:#667eea;opacity:0;transition:opacity .2s}
-.intensity-option:hover .intensity-name{opacity:1}
-.touch-area{position:relative;width:100%;height:300px;background:#f5f5f5;border-radius:8px;margin:15px 0}
-.finger{position:absolute;width:60px;height:60px;border-radius:50%;background:#FF6B6B;color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.2em;font-weight:700;transform:translate(-50%,-50%);box-shadow:0 3px 8px rgba(0,0,0,.3);transition:all .3s}
-.finger.loser{opacity:.6}
-.finger.winner{background:#4CAF50;width:80px;height:80px;font-size:1.5em;animation:winnerPulse 1s infinite;box-shadow:0 0 15px rgba(76,175,80,.8)}
-@keyframes winnerPulse{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.1)}}
-.countdown-display{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:8em;color:#667eea;font-weight:700;z-index:10;animation:countdownPulse 1s infinite}
-@keyframes countdownPulse{0%,100%{scale:1;opacity:1}50%{scale:1.1;opacity:.8}}
+    /* ═══════════════════════════════════════════════════════════════
+       STYLES GLOBAUX
+       ═══════════════════════════════════════════════════════════════ */
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:'Segoe UI',sans-serif;background:linear-gradient(135deg,#667eea,#764ba2);min-height:100vh;display:flex;justify-content:center;align-items:center;padding:10px;touch-action:none;overflow:hidden}
+    .container{background:#fff;border-radius:15px;padding:20px;max-width:500px;width:100%;box-shadow:0 5px 20px rgba(0,0,0,.3)}
+
+    /* ═══════════════════════════════════════════════════════════════
+       ÉLÉMENTS D'INTERFACE COMMUNS
+       ═══════════════════════════════════════════════════════════════ */
+    h1{color:#667eea;text-align:center;margin-bottom:15px;font-size:1.5em}
+    .screen{display:none}
+    .screen.active{display:block}
+    button{background:#667eea;color:#fff;border:0;padding:12px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;width:100%;margin-top:10px;transition:all .2s ease}
+    button:hover{background:#5568d3;transform:translateY(-2px);box-shadow:0 4px 8px rgba(0,0,0,.2)}
+    button:disabled{background:#ccc;cursor:not-allowed;transform:none;box-shadow:none}
+    .instruction{text-align:center;font-size:1em;color:#666;margin:15px 0;padding:10px;background:#f5f5f5;border-radius:6px}
+    .info{text-align:center;color:#666;margin-top:10px;font-size:.8em}
+
+    /* ═══════════════════════════════════════════════════════════════
+       ÉCRAN DE CONFIGURATION (SETUP)
+       ═══════════════════════════════════════════════════════════════ */
+    .language-selector{display:flex;gap:8px;justify-content:center;margin-bottom:15px}
+    .language-option{width:35px;height:35px;border:2px solid #e0e0e0;border-radius:50%;cursor:pointer;transition:all .2s;background:#fff;display:flex;align-items:center;justify-content:center}
+    .language-option:hover{border-color:#667eea;transform:scale(1.1)}
+    .language-option.selected{border-color:#667eea;background:#667eea}
+    .language-flag{font-size:1.3em}
+    .input-group{margin-bottom:15px}
+    label{display:block;margin-bottom:5px;color:#333;font-weight:600}
+    input[type=number]{width:100%;padding:8px;border:2px solid#e0e0e0;border-radius:6px;font-size:14px;text-align:center}
+    input[type=number]:focus{outline:0;border-color:#667eea}
+    .warning{background:#fff3cd;color:#856404;padding:8px;border-radius:6px;margin-bottom:10px;border-left:3px solid #ffc107}
+    .intensity-selector{display:flex;gap:8px;justify-content:center;margin:10px 0}
+    .intensity-option{width:40px;height:40px;border:2px solid #e0e0e0;border-radius:50%;cursor:pointer;transition:all .2s;background:#fff;display:flex;align-items:center;justify-content:center;position:relative}
+    .intensity-option:hover{border-color:#667eea;background:#f8f9ff;transform:scale(1.1)}
+    .intensity-option.selected{border-color:#667eea;background:#667eea;transform:scale(1.15)}
+    .intensity-icon{font-size:1.3em}
+    .intensity-name{position:absolute;bottom:-20px;left:50%;transform:translateX(-50%);font-size:.7em;color:#667eea;opacity:0;transition:opacity .2s}
+    .intensity-option:hover .intensity-name{opacity:1}
+
+    /* ═══════════════════════════════════════════════════════════════
+       ÉCRANS DE JEU (DÉFI, VOTE, RÉSULTAT)
+       ═══════════════════════════════════════════════════════════════ */
+    .challenge-card{background:linear-gradient(135deg,#f093fb,#f5576c);color:#fff;padding:20px;border-radius:8px;text-align:center;margin:15px 0;font-size:1.1em;min-height:120px;display:flex;align-items:center;justify-content:center}
+    .consent-options{display:flex;gap:8px;margin-top:15px}
+    .consent-btn{flex:1;padding:12px;font-size:14px;border-radius:6px;color:white!important}
+    .consent-yes{background:#4caf50}
+    .consent-yes:hover{background:#45a049}
+    .consent-no{background:#f44336}
+    .consent-no:hover{background:#da190b}
+    .result-card{padding:20px;border-radius:8px;text-align:center;margin:15px 0;font-size:1.1em;min-height:120px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+    .result-accepted{background:linear-gradient(135deg,#81fbb8,#28c76f);color:#fff}
+    .result-refused{background:linear-gradient(135deg,#f8_8_3_8_6,#ea5455);color:#fff}
+    .counter{font-size:1.8em;font-weight:700;color:#667eea;text-align:center;margin:10px 0}
+
+    /* ═══════════════════════════════════════════════════════════════
+       ÉCRAN DE SÉLECTION (NOUVEAU STYLE)
+       ═══════════════════════════════════════════════════════════════ */
+    .touch-area{position:relative;width:100%;height:350px;background:#f0f0f0;border-radius:8px;margin:15px 0;overflow:hidden}
+    .countdown-display{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:10rem;font-weight:bold;color:rgba(102,126,234,0.5);text-shadow:0 0 20px rgba(0,0,0,0.2);z-index:50;animation:countdownPulse 1s ease-in-out infinite}
+    @keyframes countdownPulse{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:1}50%{transform:translate(-50%,-50%) scale(1.1);opacity:.8}}
+
+    .finger{position:absolute;width:80px;height:80px;border-radius:50%;transform:translate(-50%,-50%);display:flex;align-items:center;justify-content:center;color:white;font-size:2rem;font-weight:bold;pointer-events:none;transition:all .3s ease;box-shadow:0 4px 15px rgba(0,0,0,.3);background:#FF6B6B}
+    .finger.loser{opacity:.5;background:#FF6B6B!important}
+    .finger.winner{animation:winnerPulse 1s ease-in-out infinite;width:100px;height:100px;font-size:3rem;z-index:100;box-shadow:0 0 30px rgba(76,175,80,.8);background:#4CAF50!important}
+    @keyframes winnerPulse{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.1)}}
 </style>
 </head>
 <body>
@@ -63,70 +82,60 @@ button:disabled{background:#ccc;cursor:not-allowed}
   <h1 id="mainTitle">🎭 Jeu de Défis Consentis</h1>
 
   <div class="screen active" id="setupScreen">
-    <div class="warning" id="warningText">⚠ Jeu pour adultes consentants 18+</div>
+    <div class="warning" id="warningText"></div>
     <div class="input-group">
-      <label for="intensity" id="intensityLabel">Intensité:</label>
+      <label for="intensity" id="intensityLabel"></label>
       <div class="intensity-selector">
-        <div class="intensity-option" data-level="soft" onclick="selectIntensity('soft')">
-          <span class="intensity-icon">😊</span>
-          <span class="intensity-name" id="intensitySoftName">Doux</span>
-        </div>
-        <div class="intensity-option" data-level="medium" onclick="selectIntensity('medium')">
-          <span class="intensity-icon">🔥</span>
-          <span class="intensity-name" id="intensityMediumName">Chaud</span>
-        </div>
-        <div class="intensity-option" data-level="hot" onclick="selectIntensity('hot')">
-          <span class="intensity-icon">🌶</span>
-          <span class="intensity-name" id="intensityHotName">Torride</span>
-        </div>
+        <div class="intensity-option" data-level="soft" onclick="selectIntensity('soft')"><span class="intensity-icon">😊</span><span class="intensity-name" id="intensitySoftName"></span></div>
+        <div class="intensity-option" data-level="medium" onclick="selectIntensity('medium')"><span class="intensity-icon">🔥</span><span class="intensity-name" id="intensityMediumName"></span></div>
+        <div class="intensity-option" data-level="hot" onclick="selectIntensity('hot')"><span class="intensity-icon">🌶</span><span class="intensity-name" id="intensityHotName"></span></div>
       </div>
     </div>
     <div class="input-group">
-      <label for="playerCount" id="playerCountLabel">Participants:</label>
+      <label for="playerCount" id="playerCountLabel"></label>
       <div style="display:flex;gap:8px;align-items:center;">
-        <button type="button" onclick="adjustPlayerCount(-1)" style="width:30px;height:30px;background:#f0f0f0;border:1px solid #ccc;border-radius:6px;">−</button>
+        <button type="button" onclick="adjustPlayerCount(-1)" style="width:40px;height:40px;background:#f0f0f0;border:1px solid #ccc;border-radius:50%;color:#333;font-size:1.5em">−</button>
         <input type="number" id="playerCount" value="2" min="2" max="20">
-        <button type="button" onclick="adjustPlayerCount(1)" style="width:30px;height:30px;background:#f0f0f0;border:1px solid #ccc;border-radius:6px;">+</button>
+        <button type="button" onclick="adjustPlayerCount(1)" style="width:40px;height:40px;background:#f0f0f0;border:1px solid #ccc;border-radius:50%;color:#333;font-size:1.5em">+</button>
       </div>
     </div>
-    <button onclick="startGame()" id="startBtn" disabled>Commencer</button>
-    <div class="info" id="infoAnonymous">Smartphone circule anonymement</div>
+    <button onclick="startGame()" id="startBtn" disabled></button>
+    <div class="info" id="infoAnonymous"></div>
   </div>
 
   <div class="screen" id="challengeScreen">
     <div class="challenge-card" id="challengeText"></div>
-    <div class="instruction" id="passPhoneText">Passez le téléphone à chaque participant</div>
-    <button onclick="startVoting()" id="startVotingBtn">Lancer le vote</button>
+    <div class="instruction" id="passPhoneText"></div>
+    <button onclick="startVoting()" id="startVotingBtn"></button>
   </div>
 
   <div class="screen" id="votingScreen">
     <div class="counter" id="voteCounter"></div>
-    <div class="instruction" id="votingInstruction"><strong>Répondez en secret</strong><br>Acceptez-vous?</div>
+    <div class="instruction" id="votingInstruction"></div>
     <div class="consent-options">
-      <button class="consent-btn consent-yes" onclick="vote(true)" id="acceptBtn">✓ Accepter</button>
-      <button class="consent-btn consent-no" onclick="vote(false)" id="refuseBtn">✗ Refuser</button>
+      <button class="consent-btn consent-yes" onclick="vote(true)" id="acceptBtn"></button>
+      <button class="consent-btn consent-no" onclick="vote(false)" id="refuseBtn"></button>
     </div>
   </div>
 
   <div class="screen" id="resultScreen">
     <div id="resultDisplay" class="result-card"></div>
-    <button onclick="startSelection()" id="selectProtBtn" style="display:none">Sélectionner protagonistes</button>
-    <button onclick="nextRound()" id="nextBtn">Prochain défi</button>
-    <button onclick="resetGame()" id="newGameBtn" style="background:#f44336">Nouvelle partie</button>
+    <button onclick="startSelection()" id="selectProtBtn" style="display:none"></button>
+    <button onclick="nextRound()" id="nextBtn"></button>
+    <button onclick="resetGame()" id="newGameBtn" style="background:#f44336"></button>
   </div>
 
   <div class="screen" id="selectionScreen">
-    <div class="instruction" id="selectionInstruction">Posez un doigt sur l'écran</div>
+    <div class="instruction" id="selectionInstruction"></div>
     <div class="touch-area" id="touchArea"></div>
-    <button onclick="startSelectionCountdown()" id="selectionBtn" disabled>Lancer sélection</button>
     <button onclick="nextRound()" id="continueBtn" style="display:none">Continuer</button>
   </div>
 
-  <div class="info" id="infoConsent">Consentement révocable à tout moment</div>
+  <div class="info" id="infoConsent"></div>
 </div>
 
 <script>
-let playerCount = 0;
+let playerCount = 2;
 let currentChallenge = null;
 let currentVote = 0;
 let allAccepted = true;
@@ -134,169 +143,89 @@ let selectedIntensity = null;
 let selectedLanguage = 'fr';
 let usedChallenges = [];
 let touches = [];
+let countdownTimer = null;
 
 const translations = {
   fr: {
     title: "🎭 Jeu de Défis Consentis",
-    warning: "⚠ Jeu pour adultes consentants 18+",
-    intensityLabel: "Intensité:",
+    warning: "⚠ Jeu pour adultes consentants (18+).",
+    intensityLabel: "Intensité :",
     intensitySoft: "Doux",
     intensityMedium: "Chaud",
     intensityHot: "Torride",
-    playerCountLabel: "Participants:",
-    startBtn: "Commencer",
-    infoAnonymous: "Smartphone circule anonymement",
-    passPhone: "Passez le téléphone à chaque participant",
-    startVoting: "Lancer le vote",
+    playerCountLabel: "Participants :",
+    startBtn: "Commencer la Partie",
+    infoAnonymous: "Le smartphone circule de manière anonyme pour les votes.",
+    passPhone: "Passez le téléphone à chaque participant pour le vote.",
+    startVoting: "Lancer le Vote Anonyme",
     participant: "Répondez en secret",
-    acceptQuestion: "Acceptez-vous?",
+    acceptQuestion: "Acceptez-vous ce défi ?",
     acceptBtn: "✓ Accepter",
     refuseBtn: "✗ Refuser",
-    challengeAccepted: "DÉFI ACCEPTÉ!",
-    allAgree: "Tous d'accord",
+    challengeAccepted: "🎉 DÉFI ACCEPTÉ ! 🎉",
+    allAgree: "Tout le monde est d'accord.",
     challengeRefused: "DÉFI REFUSÉ",
-    someoneRefused: "Quelqu'un refuse",
-    consentNeeded: "Consentement requis",
-    challengeToComplete: "Défi:",
-    nextChallenge: "Prochain défi",
-    newGame: "Nouvelle partie",
-    infoConsent: "Consentement révocable à tout moment",
-    selectIntensity: "Choisir une intensité!",
-    minPlayers: "Minimum 2 participants!",
-    selectProt: "Sélectionner protagonistes",
-    selectionInstr: "Posez un doigt sur l'écran",
-    launchSelect: "Lancer sélection"
+    someoneRefused: "Au moins une personne a refusé.",
+    consentNeeded: "Le consentement de tous est requis.",
+    challengeToComplete: "Défi à réaliser :",
+    nextChallenge: "Prochain Défi",
+    newGame: "Nouvelle Partie",
+    infoConsent: "Le consentement peut être retiré à tout moment.",
+    selectIntensity: "Veuillez choisir une intensité pour commencer !",
+    minPlayers: "Il faut au moins 2 participants !",
+    selectProt: "Sélectionner les protagonistes",
+    selectionInstr: "Posez vos doigts sur l'écran !",
+    selectionInstrInProgress: "Gardez vos doigts en place !",
+    selectionMinFingers: "Il faut au moins {n} doigts sur l'écran !",
+    continue: "Continuer"
   },
   en: {
-    title: "🎭 Challenge Game",
-    warning: "⚠ For consenting adults 18+",
+    title: "🎭 Consent Challenge Game",
+    warning: "⚠ Game for consenting adults (18+).",
     intensityLabel: "Intensity:",
     intensitySoft: "Soft",
     intensityMedium: "Hot",
     intensityHot: "Spicy",
     playerCountLabel: "Players:",
-    startBtn: "Start",
-    infoAnonymous: "Phone circulates anonymously",
-    passPhone: "Pass phone to each player",
-    startVoting: "Start voting",
-    participant: "Answer privately",
-    acceptQuestion: "Accept challenge?",
+    startBtn: "Start Game",
+    infoAnonymous: "The phone is passed around anonymously for voting.",
+    passPhone: "Pass the phone to each player for the vote.",
+    startVoting: "Start Anonymous Voting",
+    participant: "Answer secretly",
+    acceptQuestion: "Do you accept this challenge?",
     acceptBtn: "✓ Accept",
     refuseBtn: "✗ Refuse",
-    challengeAccepted: "CHALLENGE ACCEPTED!",
-    allAgree: "All agree",
+    challengeAccepted: "🎉 CHALLENGE ACCEPTED! 🎉",
+    allAgree: "Everyone agreed.",
     challengeRefused: "CHALLENGE REFUSED",
-    someoneRefused: "Someone disagrees",
-    consentNeeded: "Full consent needed",
-    challengeToComplete: "Challenge:",
-    nextChallenge: "Next challenge",
-    newGame: "New game",
-    infoConsent: "Consent can be withdrawn anytime",
-    selectIntensity: "Select intensity!",
-    minPlayers: "Minimum 2 players!",
-    selectProt: "Select protagonists",
-    selectionInstr: "Place a finger on screen",
-    launchSelect: "Launch selection"
+    someoneRefused: "At least one person refused.",
+    consentNeeded: "Full consent from everyone is required.",
+    challengeToComplete: "Challenge to perform:",
+    nextChallenge: "Next Challenge",
+    newGame: "New Game",
+    infoConsent: "Consent can be withdrawn at any time.",
+    selectIntensity: "Please select an intensity to start!",
+    minPlayers: "A minimum of 2 players is required!",
+    selectProt: "Select Protagonists",
+    selectionInstr: "Place your fingers on the screen!",
+    selectionInstrInProgress: "Keep your fingers in place!",
+    selectionMinFingers: "At least {n} fingers are required on screen!",
+    continue: "Continue"
   }
 };
 
 const challenges = {
-  soft: {
-    fr: [
-      { t: "Massez les épaules de la personne à votre gauche 30s", n: 2 },
-      { t: "Compliment sincère à tous", n: 1 },
-      { t: "Dansez suggestivement 30s", n: 1 }
-    ],
-    en: [
-      { t: "Massage shoulders of person on left 30s", n: 2 },
-      { t: "Sincere compliment to all", n: 1 },
-      { t: "Dance suggestively 30s", n: 1 }
-    ]
-  },
-  medium: {
-    fr: [
-      { t: "Embrassez la joue de la personne à droite", n: 2 },
-      { t: "Racontez une anecdote romantique", n: 1 },
-      { t: "Clin d'œil charmeur à tous", n: 1 }
-    ],
-    en: [
-      { t: "Kiss cheek of person on right", n: 2 },
-      { t: "Share romantic anecdote", n: 1 },
-      { t: "Charming wink to all", n: 1 }
-    ]
-  },
-  hot: {
-    fr: [
-      { t: "Chuchotez phrase séductrice", n: 2 },
-      { t: "Danse sensuelle à deux", n: 2 },
-      { t: "Partagez un fantasme respectueux", n: 1 }
-    ],
-    en: [
-      { t: "Whisper seductive phrase", n: 2 },
-      { t: "Sensual dance with partner", n: 2 },
-      { t: "Share respectful fantasy", n: 1 }
-    ]
-  }
+  soft: {fr:[{t:"Faire un compliment sincère à chaque personne.",n:0},{t:"Le groupe doit créer une chorégraphie de 15 secondes.",n:0},{t:"Masser les épaules de la personne à sa gauche pendant 30 secondes.",n:2}],en:[{t:"Give a sincere compliment to each person.",n:0},{t:"The group must create a 15-second choreography.",n:0},{t:"Massage the shoulders of the person on your left for 30 seconds.",n:2}]},
+  medium: {fr:[{t:"Échanger un baiser sur la joue avec la personne en face.",n:2},{t:"Raconter une anecdote personnelle un peu embarrassante.",n:1},{t:"Échanger un regard intense de 10 secondes avec la personne à sa droite.",n:2}],en:[{t:"Exchange a kiss on the cheek with the person opposite you.",n:2},{t:"Tell a slightly embarrassing personal anecdote.",n:1},{t:"Exchange an intense 10-second gaze with the person on your right.",n:2}]},
+  hot: {fr:[{t:"Chuchoter une phrase séduisante à l'oreille de la personne de son choix.",n:2},{t:"Partager un fantasme (en restant respectueux).",n:1},{t:"Réaliser une danse sensuelle de 30 secondes à deux.",n:2}],en:[{t:"Whisper a seductive phrase in the ear of the person of your choice.",n:2},{t:"Share a fantasy (while remaining respectful).",n:1},{t:"Perform a 30-second sensual dance with a partner.",n:2}]}
 };
+
+const touchArea = document.getElementById('touchArea');
 
 function selectLanguage(lang) {
   selectedLanguage = lang;
-  document.querySelectorAll('.language-option').forEach(opt =>
-    opt.classList.toggle('selected', opt.dataset.lang === lang)
-  );
+  document.querySelectorAll('.language-option').forEach(opt=>opt.classList.toggle('selected', opt.dataset.lang === lang));
   updateInterface();
-}
-
-function selectIntensity(level) {
-  selectedIntensity = level;
-  document.querySelectorAll('.intensity-option').forEach(opt =>
-    opt.classList.toggle('selected', opt.dataset.level === level)
-  );
-  updateStartButton();
-}
-
-function adjustPlayerCount(delta) {
-  const input = document.getElementById('playerCount');
-  let value = parseInt(input.value) || 2;
-  value += delta;
-  if (value < 2) value = 2;
-  if (value > 20) value = 20;
-  input.value = value;
-  updateStartButton();
-}
-
-function updateStartButton() {
-  const startBtn = document.getElementById('startBtn');
-  const playerInput = document.getElementById('playerCount'); // ✅ sans espace
-  playerCount = parseInt(playerInput.value) || 0;
-  if (playerCount < 2 || playerCount > 20) {
-    playerInput.value = 2;
-    playerCount = 2;
-  }
-  startBtn.disabled = !selectedIntensity || playerCount < 2;
-}
-
-function showScreen(screenId) {
-  document.querySelectorAll('.screen').forEach(screen =>
-    screen.classList.toggle('active', screen.id === screenId)
-  );
-}
-
-function getRandomChallenge() {
-  let challengeList = challenges[selectedIntensity]?.[selectedLanguage] || [];
-  if (!challengeList.length) {
-    alert(translations[selectedLanguage].selectIntensity);
-    return null;
-  }
-  challengeList = challengeList.filter(c => !usedChallenges.includes(c.t));
-  if (!challengeList.length) {
-    usedChallenges = [];
-    challengeList = challenges[selectedIntensity][selectedLanguage];
-  }
-  const randomIndex = Math.floor(Math.random() * challengeList.length);
-  const challenge = challengeList[randomIndex];
-  usedChallenges.push(challenge.t);
-  return challenge;
 }
 
 function updateInterface() {
@@ -307,10 +236,10 @@ function updateInterface() {
   document.getElementById('intensitySoftName').textContent = t.intensitySoft;
   document.getElementById('intensityMediumName').textContent = t.intensityMedium;
   document.getElementById('intensityHotName').textContent = t.intensityHot;
-  document.getElementById('playerCountLabel').textContent = t.playerCountLabel; // ✅
+  document.getElementById('playerCountLabel').textContent = t.playerCountLabel;
   document.getElementById('startBtn').textContent = t.startBtn;
   document.getElementById('infoAnonymous').textContent = t.infoAnonymous;
-  document.getElementById('passPhoneText').textContent = t.passPhone; // ✅
+  document.getElementById('passPhoneText').textContent = t.passPhone;
   document.getElementById('startVotingBtn').textContent = t.startVoting;
   document.getElementById('votingInstruction').innerHTML = `<strong>${t.participant}</strong><br>${t.acceptQuestion}`;
   document.getElementById('acceptBtn').textContent = t.acceptBtn;
@@ -320,21 +249,49 @@ function updateInterface() {
   document.getElementById('infoConsent').textContent = t.infoConsent;
   document.getElementById('selectProtBtn').textContent = t.selectProt;
   document.getElementById('selectionInstruction').textContent = t.selectionInstr;
-  document.getElementById('selectionBtn').textContent = t.launchSelect;
+  document.getElementById('continueBtn').textContent = t.continue;
+}
+
+function selectIntensity(level) {
+  selectedIntensity = level;
+  document.querySelectorAll('.intensity-option').forEach(opt=>opt.classList.toggle('selected', opt.dataset.level === level));
+  updateStartButton();
+}
+
+function adjustPlayerCount(delta) {
+  const input = document.getElementById('playerCount');
+  let value = parseInt(input.value) || 2;
+  value = Math.max(2, Math.min(20, value + delta));
+  input.value = value;
+  updateStartButton();
+}
+
+function updateStartButton() {
+  const startBtn = document.getElementById('startBtn');
+  playerCount = parseInt(document.getElementById('playerCount').value) || 2;
+  startBtn.disabled = !selectedIntensity || playerCount < 2;
+}
+
+function showScreen(screenId) {
+  document.querySelectorAll('.screen').forEach(screen=>screen.classList.toggle('active', screen.id === screenId));
+}
+
+function getRandomChallenge() {
+  let challengeList = challenges[selectedIntensity]?.[selectedLanguage] || [];
+  if (!challengeList.length) return null;
+  let availableChallenges = challengeList.filter(c => !usedChallenges.includes(c.t));
+  if (availableChallenges.length === 0) {
+    usedChallenges = [];
+    availableChallenges = challengeList;
+  }
+  const challenge = availableChallenges[Math.floor(Math.random() * availableChallenges.length)];
+  usedChallenges.push(challenge.t);
+  return challenge;
 }
 
 function startGame() {
-  playerCount = parseInt(document.getElementById('playerCount').value) || 0; // ✅
-  if (playerCount < 2 || playerCount > 20) {
-    alert(translations[selectedLanguage].minPlayers);
-    document.getElementById('playerCount').value = 2; // ✅
-    playerCount = 2;
-    return;
-  }
-  if (!selectedIntensity) {
-    alert(translations[selectedLanguage].selectIntensity);
-    return;
-  }
+  playerCount = parseInt(document.getElementById('playerCount').value);
+  if (!selectedIntensity) { alert(translations[selectedLanguage].selectIntensity); return; }
   currentChallenge = getRandomChallenge();
   if (!currentChallenge) return;
   document.getElementById('challengeText').textContent = currentChallenge.t;
@@ -346,141 +303,164 @@ function startGame() {
 function startVoting() {
   currentVote = 0;
   allAccepted = true;
-  document.getElementById('voteCounter').textContent = `0/${playerCount}`;
+  document.getElementById('voteCounter').textContent = `0 / ${playerCount}`;
   showScreen('votingScreen');
 }
 
 function vote(accepted) {
   currentVote++;
   if (!accepted) allAccepted = false;
-  document.getElementById('voteCounter').textContent = `${currentVote}/${playerCount}`;
-  if (currentVote < playerCount) return;
-  showScreen('resultScreen');
-  const resultDisplay = document.getElementById('resultDisplay'); // ✅
-  resultDisplay.className = `result-card ${allAccepted ? 'result-accepted' : 'result-refused'}`;
-  resultDisplay.innerHTML = allAccepted
-    ? `<h3>${translations[selectedLanguage].challengeAccepted}</h3><p>${translations[selectedLanguage].allAgree}</p><p>${translations[selectedLanguage].challengeToComplete} ${currentChallenge.t}</p>`
-    : `<h3>${translations[selectedLanguage].challengeRefused}</h3><p>${translations[selectedLanguage].someoneRefused}</p><p>${translations[selectedLanguage].consentNeeded}</p>`;
-  document.getElementById('selectProtBtn').style.display = allAccepted && currentChallenge && currentChallenge.n > 0 ? 'block' : 'none';
-  document.getElementById('nextBtn').style.display = allAccepted && currentChallenge && currentChallenge.n === 0 ? 'block' : 'none';
+  document.getElementById('voteCounter').textContent = `${currentVote} / ${playerCount}`;
+  if (currentVote >= playerCount) {
+    showScreen('resultScreen');
+    const resultDisplay = document.getElementById('resultDisplay');
+    resultDisplay.className = `result-card ${allAccepted ? 'result-accepted' : 'result-refused'}`;
+    resultDisplay.innerHTML = allAccepted
+      ? `<h3>${translations[selectedLanguage].challengeAccepted}</h3><p>${translations[selectedLanguage].allAgree}</p><hr style="width:50%;margin:10px auto;border-color:rgba(255,255,255,0.5)"><p><strong>${translations[selectedLanguage].challengeToComplete}</strong><br>${currentChallenge.t}</p>`
+      : `<h3>${translations[selectedLanguage].challengeRefused}</h3><p>${translations[selectedLanguage].someoneRefused}</p><p>${translations[selectedLanguage].consentNeeded}</p>`;
+    
+    const needsSelection = allAccepted && currentChallenge && currentChallenge.n > 1;
+    document.getElementById('selectProtBtn').style.display = needsSelection ? 'block' : 'none';
+    document.getElementById('nextBtn').style.display = !needsSelection ? 'block' : 'none';
+  }
 }
 
 function nextRound() {
+  if(countdownTimer) clearInterval(countdownTimer);
+  countdownTimer = null;
   currentChallenge = getRandomChallenge();
-  if (!currentChallenge) return;
+  if (!currentChallenge) {
+    resetGame();
+    return;
+  }
   document.getElementById('challengeText').textContent = currentChallenge.t;
   showScreen('challengeScreen');
 }
 
 function resetGame() {
-  playerCount = 0;
+  if (countdownTimer) clearInterval(countdownTimer);
+  playerCount = 2;
   currentChallenge = null;
   currentVote = 0;
   allAccepted = true;
   selectedIntensity = null;
   usedChallenges = [];
   touches = [];
-  document.getElementById('playerCount').value = 2; // ✅
-  document.querySelectorAll('.intensity-option').forEach(opt => opt.classList.remove('selected'));
+  countdownTimer = null;
+  document.getElementById('playerCount').value = 2;
+  document.querySelectorAll('.intensity-option.selected').forEach(opt=>opt.classList.remove('selected'));
   showScreen('setupScreen');
   updateStartButton();
 }
+
+// --- NOUVELLE LOGIQUE DE SÉLECTION ---
 
 function startSelection() {
   showScreen('selectionScreen');
   touches = [];
   renderFingers();
-  document.getElementById('selectionBtn').disabled = true;
   document.getElementById('continueBtn').style.display = 'none';
-  document.getElementById('selectionBtn').style.display = 'block';
+  document.getElementById('selectionInstruction').textContent = translations[selectedLanguage].selectionInstr;
 }
 
-const touchArea = document.getElementById('touchArea');
-
-touchArea.addEventListener('touchstart', e => {
-  e.preventDefault();
-  updateTouches(e.touches);
-});
-touchArea.addEventListener('touchmove', e => {
-  e.preventDefault();
-  updateTouches(e.touches);
-});
-touchArea.addEventListener('touchend', e => {
-  e.preventDefault();
-  updateTouches(e.touches);
-});
-
 function updateTouches(touchList) {
-  const rect = touchArea.getBoundingClientRect();
-  touches = Array.from(touchList).map((t, i) => ({
-    id: t.identifier,
-    x: t.clientX - rect.left,
-    y: t.clientY - rect.top,
-    number: i + 1
-  }));
-  renderFingers();
-  document.getElementById('selectionBtn').disabled = !currentChallenge || touches.length < currentChallenge.n;
+    const rect = touchArea.getBoundingClientRect();
+    touches = Array.from(touchList).map((t, i) => ({
+        id: t.identifier,
+        x: t.clientX - rect.left,
+        y: t.clientY - rect.top,
+        number: i + 1
+    }));
+    renderFingers();
+
+    if (touches.length > 0 && !countdownTimer) {
+        startSelectionCountdown();
+    } else if (touches.length === 0 && countdownTimer) {
+        clearInterval(countdownTimer);
+        countdownTimer = null;
+        const cdDisplay = touchArea.querySelector('.countdown-display');
+        if (cdDisplay) cdDisplay.remove();
+        document.getElementById('selectionInstruction').textContent = translations[selectedLanguage].selectionInstr;
+    }
 }
 
 function renderFingers() {
-  touchArea.innerHTML = '';
-  touches.forEach(t => {
-    const finger = document.createElement('div');
-    finger.classList.add('finger');
-    finger.style.left = `${t.x}px`;
-    finger.style.top = `${t.y}px`;
-    finger.textContent = t.number;
-    touchArea.appendChild(finger);
-  });
+    touchArea.innerHTML = touchArea.querySelector('.countdown-display')?.outerHTML || '';
+    touches.forEach(t => {
+        const finger = document.createElement('div');
+        finger.className = 'finger';
+        finger.style.left = `${t.x}px`;
+        finger.style.top = `${t.y}px`;
+        finger.textContent = t.number;
+        finger.dataset.id = t.id;
+        touchArea.appendChild(finger);
+    });
 }
 
 function startSelectionCountdown() {
-  let count = 5;
-  const cdDisplay = document.createElement('div');
-  cdDisplay.classList.add('countdown-display'); // ✅
-  touchArea.appendChild(cdDisplay);
-  const interval = setInterval(() => {
-    cdDisplay.textContent = count;
-    count--;
-    if (count < 0) {
-      clearInterval(interval);
-      cdDisplay.remove();
-      selectProtagonists();
-    }
-  }, 1000);
+    document.getElementById('selectionInstruction').textContent = translations[selectedLanguage].selectionInstrInProgress;
+    let count = 3;
+    const cdDisplay = document.createElement('div');
+    cdDisplay.className = 'countdown-display';
+    touchArea.appendChild(cdDisplay);
+
+    countdownTimer = setInterval(() => {
+        cdDisplay.textContent = count;
+        count--;
+        if (count < 0) {
+            clearInterval(countdownTimer);
+            countdownTimer = null;
+            cdDisplay.remove();
+            selectProtagonists();
+        }
+    }, 1000);
 }
 
 function selectProtagonists() {
-  if (!currentChallenge) return;
-  const num = currentChallenge.n;
-  if (touches.length < num) {
-    alert(translations[selectedLanguage].minPlayers);
-    return;
-  }
-  let candidates = [...touches];
-  const winners = [];
-  for (let i = 0; i < num; i++) {
-    const rand = Math.floor(Math.random() * candidates.length);
-    winners.push(candidates[rand]);
-    candidates.splice(rand, 1);
-  }
-  document.querySelectorAll('.finger').forEach(f => f.classList.add('loser'));
-  winners.forEach(w => {
-    const winFinger = Array.from(document.querySelectorAll('.finger')).find(f => f.textContent == w.number);
-    if (winFinger) {
-      winFinger.classList.remove('loser');
-      winFinger.classList.add('winner');
+    if (!currentChallenge || touches.length < currentChallenge.n) {
+        alert(translations[selectedLanguage].selectionMinFingers.replace('{n}', currentChallenge.n));
+        startSelection(); // Reset
+        return;
     }
-  });
-  document.getElementById('selectionBtn').style.display = 'none';
-  document.getElementById('continueBtn').style.display = 'block';
+    
+    let candidates = [...touches];
+    const winners = [];
+    for (let i = 0; i < currentChallenge.n; i++) {
+        const randIndex = Math.floor(Math.random() * candidates.length);
+        winners.push(candidates[randIndex]);
+        candidates.splice(randIndex, 1);
+    }
+    
+    const winnerIds = new Set(winners.map(w => w.id));
+    
+    document.querySelectorAll('.finger').forEach(f => {
+        const fingerId = parseInt(f.dataset.id);
+        if (winnerIds.has(fingerId)) {
+            f.classList.add('winner');
+        } else {
+            f.classList.add('loser');
+        }
+    });
+
+    document.getElementById('continueBtn').style.display = 'block';
+    touchArea.removeEventListener('touchstart', handleTouch);
+    touchArea.removeEventListener('touchmove', handleTouch);
+    touchArea.removeEventListener('touchend', handleTouch);
 }
+
+function handleTouch(e) {
+    e.preventDefault();
+    updateTouches(e.touches);
+}
+
+touchArea.addEventListener('touchstart', handleTouch, {passive: false});
+touchArea.addEventListener('touchmove', handleTouch, {passive: false});
+touchArea.addEventListener('touchend', handleTouch, {passive: false});
 
 // Initialisation
 selectLanguage('fr');
 updateStartButton();
+
 </script>
 </body>
 </html>
-
-
