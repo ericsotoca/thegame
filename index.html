@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Jeu de Défis Consentis v5 - Décompte 5s</title>
+<title>Jeu de Défis Consentis v6 - Multilingue</title>
 <style>
     /* ═══════════════════════════════════════════════════════════════
        STYLES GLOBAUX
@@ -108,6 +108,7 @@
   <div class="language-selector">
     <div class="language-option selected" data-lang="fr" onclick="selectLanguage('fr')"><span class="language-flag">🇫🇷</span></div>
     <div class="language-option" data-lang="en" onclick="selectLanguage('en')"><span class="language-flag">🇬🇧</span></div>
+    <div class="language-option" data-lang="pt" onclick="selectLanguage('pt')"><span class="language-flag">🇵🇹</span></div>
   </div>
   <h1 id="mainTitle"></h1>
 
@@ -252,13 +253,60 @@ const translations = {
     selectNextProt: "Select Next",
     continue: "Continue",
     minPlayersForSelection: "At least 1 finger is required on screen!"
+  },
+  pt: {
+    title: "🎭 Jogo de Desafios Consentidos",
+    warning: "⚠ Jogo para adultos (18+). É necessário consentimento.",
+    intensityLabel: "Intensidade:",
+    intensitySoft: "Leve",
+    intensityMedium: "Quente",
+    intensityHot: "Ardente",
+    playerCountLabel: "Participantes:",
+    startBtn: "Começar o Jogo",
+    infoAnonymous: "O telemóvel circula anonimamente para as votações.",
+    passPhone: "Passe o telemóvel a cada participante para a votação.",
+    startVoting: "Iniciar Votação Anónima",
+    participant: "Responda em segredo",
+    acceptQuestion: "Aceita este desafio?",
+    acceptBtn: "✓ Aceitar",
+    refuseBtn: "✗ Recusar",
+    challengeAccepted: "🎉 DESAFIO ACEITE! 🎉",
+    allAgree: "Todos concordaram.",
+    challengeRefused: "DESAFIO RECUSADO",
+    someoneRefused: "Pelo menos uma pessoa recusou.",
+    consentNeeded: "É necessário o consentimento de todos.",
+    challengeToComplete: "Desafio a realizar:",
+    nextChallenge: "Próximo Desafio",
+    newGame: "Novo Jogo",
+    infoConsent: "O consentimento pode ser retirado a qualquer momento.",
+    selectIntensity: "Por favor, escolha uma intensidade para começar!",
+    minPlayers: "São necessários pelo menos 2 participantes!",
+    selectProt: "Selecionar Protagonistas",
+    selectionInstr: "Coloquem os dedos no ecrã!",
+    selectionInstrInProgress: "Mantenham os dedos no sítio...",
+    selectProtagonistOf: "A selecionar o protagonista {current} de {total}",
+    selectNextProt: "Selecionar o Próximo",
+    continue: "Continuar",
+    minPlayersForSelection: "É necessário pelo menos 1 dedo no ecrã!"
   }
 };
 
 const challenges = {
-  soft: {fr:[{t:"Faire un compliment sincère à chaque personne.",n:0},{t:"Le groupe doit créer une chorégraphie de 15 secondes.",n:0},{t:"Masser les épaules de la personne à sa gauche pendant 30 secondes.",n:2}],en:[{t:"Give a sincere compliment to each person.",n:0},{t:"The group must create a 15-second choreography.",n:0},{t:"Massage the shoulders of the person on your left for 30 seconds.",n:2}]},
-  medium: {fr:[{t:"Échanger un baiser sur la joue avec la personne en face.",n:2},{t:"Raconter une anecdote personnelle un peu embarrassante.",n:1},{t:"Échanger un regard intense de 10 secondes avec la personne à sa droite.",n:2}],en:[{t:"Exchange a kiss on the cheek with the person opposite you.",n:2},{t:"Tell a slightly embarrassing personal anecdote.",n:1},{t:"Exchange an intense 10-second gaze with the person on your right.",n:2}]},
-  hot: {fr:[{t:"Chuchoter une phrase séduisante à l'oreille de la personne de son choix.",n:2},{t:"Partager un fantasme (en restant respectueux).",n:1},{t:"Réaliser une danse sensuelle de 30 secondes à deux.",n:2}],en:[{t:"Whisper a seductive phrase in the ear of the person of your choice.",n:2},{t:"Share a fantasy (while remaining respectful).",n:1},{t:"Perform a 30-second sensual dance with a partner.",n:2}]}
+  soft: {
+    fr:[{t:"Faire un compliment sincère à chaque personne.",n:0},{t:"Le groupe doit créer une chorégraphie de 15 secondes.",n:0},{t:"Masser les épaules de la personne à sa gauche pendant 30 secondes.",n:2}],
+    en:[{t:"Give a sincere compliment to each person.",n:0},{t:"The group must create a 15-second choreography.",n:0},{t:"Massage the shoulders of the person on your left for 30 seconds.",n:2}],
+    pt:[{t:"Faça um elogio sincero a cada pessoa.",n:0},{t:"O grupo deve criar uma coreografia de 15 segundos.",n:0},{t:"Massaje os ombros da pessoa à sua esquerda durante 30 segundos.",n:2}]
+  },
+  medium: {
+    fr:[{t:"Échanger un baiser sur la joue avec la personne en face.",n:2},{t:"Raconter une anecdote personnelle un peu embarrassante.",n:1},{t:"Échanger un regard intense de 10 secondes avec la personne à sa droite.",n:2}],
+    en:[{t:"Exchange a kiss on the cheek with the person opposite you.",n:2},{t:"Tell a slightly embarrassing personal anecdote.",n:1},{t:"Exchange an intense 10-second gaze with the person on your right.",n:2}],
+    pt:[{t:"Troque um beijo na bochecha com a pessoa à sua frente.",n:2},{t:"Conte uma anedota pessoal um pouco embaraçosa.",n:1},{t:"Troque um olhar intenso de 10 segundos com a pessoa à sua direita.",n:2}]
+  },
+  hot: {
+    fr:[{t:"Chuchoter une phrase séduisante à l'oreille de la personne de son choix.",n:2},{t:"Partager un fantasme (en restant respectueux).",n:1},{t:"Réaliser une danse sensuelle de 30 secondes à deux.",n:2}],
+    en:[{t:"Whisper a seductive phrase in the ear of the person of your choice.",n:2},{t:"Share a fantasy (while remaining respectful).",n:1},{t:"Perform a 30-second sensual dance with a partner.",n:2}],
+    pt:[{t:"Sussurre uma frase sedutora ao ouvido da pessoa à sua escolha.",n:2},{t:"Partilhe uma fantasia (mantendo o respeito).",n:1},{t:"Faça uma dança sensual de 30 segundos com um parceiro.",n:2}]
+  }
 };
 
 // --- FONCTIONS PRINCIPALES DU JEU ---
@@ -474,7 +522,7 @@ function renderFingers() {
 
 function startSelectionCountdown() {
     document.getElementById('selectionInstruction').textContent = translations[selectedLanguage].selectionInstrInProgress;
-    let count = 5; // <-- Le décompte est maintenant de 5 secondes.
+    let count = 5;
     const cdDisplay = document.createElement('div');
     cdDisplay.className = 'countdown-display';
     touchArea.appendChild(cdDisplay);
