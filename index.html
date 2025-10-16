@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Jeu de Défis Consentis v2</title>
+<title>Jeu de Défis Consentis v3 - Sélection Séquentielle</title>
 <style>
     /* ═══════════════════════════════════════════════════════════════
        STYLES GLOBAUX
@@ -61,7 +61,7 @@
     .counter{font-size:1.8em;font-weight:700;color:#667eea;text-align:center;margin:10px 0}
 
     /* ═══════════════════════════════════════════════════════════════
-       ÉCRAN DE SÉLECTION (NOUVEAU STYLE)
+       ÉCRAN DE SÉLECTION
        ═══════════════════════════════════════════════════════════════ */
     .touch-area{position:relative;width:100%;height:350px;background:#f0f0f0;border-radius:8px;margin:15px 0;overflow:hidden}
     .countdown-display{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:10rem;font-weight:bold;color:rgba(102,126,234,0.5);text-shadow:0 0 20px rgba(0,0,0,0.2);z-index:50;animation:countdownPulse 1s ease-in-out infinite}
@@ -79,7 +79,7 @@
     <div class="language-option selected" data-lang="fr" onclick="selectLanguage('fr')"><span class="language-flag">🇫🇷</span></div>
     <div class="language-option" data-lang="en" onclick="selectLanguage('en')"><span class="language-flag">🇬🇧</span></div>
   </div>
-  <h1 id="mainTitle">🎭 Jeu de Défis Consentis</h1>
+  <h1 id="mainTitle"></h1>
 
   <div class="screen active" id="setupScreen">
     <div class="warning" id="warningText"></div>
@@ -128,13 +128,14 @@
   <div class="screen" id="selectionScreen">
     <div class="instruction" id="selectionInstruction"></div>
     <div class="touch-area" id="touchArea"></div>
-    <button onclick="nextRound()" id="continueBtn" style="display:none">Continuer</button>
+    <button id="selectionActionBtn" style="display:none"></button>
   </div>
 
   <div class="info" id="infoConsent"></div>
 </div>
 
 <script>
+// --- VARIABLES GLOBALES ---
 let playerCount = 2;
 let currentChallenge = null;
 let currentVote = 0;
@@ -144,7 +145,14 @@ let selectedLanguage = 'fr';
 let usedChallenges = [];
 let touches = [];
 let countdownTimer = null;
+// Variables pour la sélection séquentielle
+let protagonistsToSelect = 0;
+let selectedProtagonists = [];
 
+const touchArea = document.getElementById('touchArea');
+const selectionActionBtn = document.getElementById('selectionActionBtn');
+
+// --- DONNÉES DU JEU (TRADUCTIONS & DÉFIS) ---
 const translations = {
   fr: {
     title: "🎭 Jeu de Défis Consentis",
@@ -175,9 +183,11 @@ const translations = {
     minPlayers: "Il faut au moins 2 participants !",
     selectProt: "Sélectionner les protagonistes",
     selectionInstr: "Posez vos doigts sur l'écran !",
-    selectionInstrInProgress: "Gardez vos doigts en place !",
-    selectionMinFingers: "Il faut au moins {n} doigts sur l'écran !",
-    continue: "Continuer"
+    selectionInstrInProgress: "Gardez vos doigts en place...",
+    selectProtagonistOf: "Sélection du protagoniste {current} sur {total}",
+    selectNextProt: "Sélectionner le suivant",
+    continue: "Continuer",
+    minPlayersForSelection: "Il faut au moins 1 doigt sur l'écran !"
   },
   en: {
     title: "🎭 Consent Challenge Game",
@@ -208,9 +218,11 @@ const translations = {
     minPlayers: "A minimum of 2 players is required!",
     selectProt: "Select Protagonists",
     selectionInstr: "Place your fingers on the screen!",
-    selectionInstrInProgress: "Keep your fingers in place!",
-    selectionMinFingers: "At least {n} fingers are required on screen!",
-    continue: "Continue"
+    selectionInstrInProgress: "Keep your fingers in place...",
+    selectProtagonistOf: "Selecting protagonist {current} of {total}",
+    selectNextProt: "Select Next",
+    continue: "Continue",
+    minPlayersForSelection: "At least 1 finger is required on screen!"
   }
 };
 
@@ -220,7 +232,7 @@ const challenges = {
   hot: {fr:[{t:"Chuchoter une phrase séduisante à l'oreille de la personne de son choix.",n:2},{t:"Partager un fantasme (en restant respectueux).",n:1},{t:"Réaliser une danse sensuelle de 30 secondes à deux.",n:2}],en:[{t:"Whisper a seductive phrase in the ear of the person of your choice.",n:2},{t:"Share a fantasy (while remaining respectful).",n:1},{t:"Perform a 30-second sensual dance with a partner.",n:2}]}
 };
 
-const touchArea = document.getElementById('touchArea');
+// --- FONCTIONS PRINCIPALES DU JEU ---
 
 function selectLanguage(lang) {
   selectedLanguage = lang;
@@ -248,8 +260,6 @@ function updateInterface() {
   document.getElementById('newGameBtn').textContent = t.newGame;
   document.getElementById('infoConsent').textContent = t.infoConsent;
   document.getElementById('selectProtBtn').textContent = t.selectProt;
-  document.getElementById('selectionInstruction').textContent = t.selectionInstr;
-  document.getElementById('continueBtn').textContent = t.continue;
 }
 
 function selectIntensity(level) {
@@ -319,7 +329,7 @@ function vote(accepted) {
       ? `<h3>${translations[selectedLanguage].challengeAccepted}</h3><p>${translations[selectedLanguage].allAgree}</p><hr style="width:50%;margin:10px auto;border-color:rgba(255,255,255,0.5)"><p><strong>${translations[selectedLanguage].challengeToComplete}</strong><br>${currentChallenge.t}</p>`
       : `<h3>${translations[selectedLanguage].challengeRefused}</h3><p>${translations[selectedLanguage].someoneRefused}</p><p>${translations[selectedLanguage].consentNeeded}</p>`;
     
-    const needsSelection = allAccepted && currentChallenge && currentChallenge.n > 1;
+    const needsSelection = allAccepted && currentChallenge && currentChallenge.n > 0;
     document.getElementById('selectProtBtn').style.display = needsSelection ? 'block' : 'none';
     document.getElementById('nextBtn').style.display = !needsSelection ? 'block' : 'none';
   }
@@ -347,20 +357,44 @@ function resetGame() {
   usedChallenges = [];
   touches = [];
   countdownTimer = null;
+  protagonistsToSelect = 0;
+  selectedProtagonists = [];
   document.getElementById('playerCount').value = 2;
   document.querySelectorAll('.intensity-option.selected').forEach(opt=>opt.classList.remove('selected'));
   showScreen('setupScreen');
   updateStartButton();
 }
 
-// --- NOUVELLE LOGIQUE DE SÉLECTION ---
+// --- LOGIQUE DE SÉLECTION SÉQUENTIELLE ---
 
 function startSelection() {
-  showScreen('selectionScreen');
-  touches = [];
-  renderFingers();
-  document.getElementById('continueBtn').style.display = 'none';
-  document.getElementById('selectionInstruction').textContent = translations[selectedLanguage].selectionInstr;
+    protagonistsToSelect = currentChallenge.n;
+    selectedProtagonists = [];
+    runSingleSelectionRound();
+}
+
+function runSingleSelectionRound() {
+    showScreen('selectionScreen');
+    touches = [];
+    if (countdownTimer) clearInterval(countdownTimer);
+    countdownTimer = null;
+    
+    const instructionText = translations[selectedLanguage].selectProtagonistOf
+        .replace('{current}', selectedProtagonists.length + 1)
+        .replace('{total}', protagonistsToSelect);
+    document.getElementById('selectionInstruction').textContent = instructionText;
+    
+    touchArea.innerHTML = '';
+    selectionActionBtn.style.display = 'none';
+
+    touchArea.addEventListener('touchstart', handleTouch, {passive: false});
+    touchArea.addEventListener('touchmove', handleTouch, {passive: false});
+    touchArea.addEventListener('touchend', handleTouch, {passive: false});
+}
+
+function handleTouch(e) {
+    e.preventDefault();
+    updateTouches(e.touches);
 }
 
 function updateTouches(touchList) {
@@ -380,12 +414,16 @@ function updateTouches(touchList) {
         countdownTimer = null;
         const cdDisplay = touchArea.querySelector('.countdown-display');
         if (cdDisplay) cdDisplay.remove();
-        document.getElementById('selectionInstruction').textContent = translations[selectedLanguage].selectionInstr;
+        document.getElementById('selectionInstruction').textContent = translations[selectedLanguage].selectProtagonistOf
+            .replace('{current}', selectedProtagonists.length + 1)
+            .replace('{total}', protagonistsToSelect);
     }
 }
 
 function renderFingers() {
-    touchArea.innerHTML = touchArea.querySelector('.countdown-display')?.outerHTML || '';
+    const countdownHTML = touchArea.querySelector('.countdown-display')?.outerHTML || '';
+    touchArea.innerHTML = countdownHTML;
+
     touches.forEach(t => {
         const finger = document.createElement('div');
         finger.className = 'finger';
@@ -411,56 +449,46 @@ function startSelectionCountdown() {
             clearInterval(countdownTimer);
             countdownTimer = null;
             cdDisplay.remove();
-            selectProtagonists();
+            selectProtagonist();
         }
     }, 1000);
 }
 
-function selectProtagonists() {
-    if (!currentChallenge || touches.length < currentChallenge.n) {
-        alert(translations[selectedLanguage].selectionMinFingers.replace('{n}', currentChallenge.n));
-        startSelection(); // Reset
+function selectProtagonist() {
+    if (touches.length < 1) {
+        alert(translations[selectedLanguage].minPlayersForSelection);
+        runSingleSelectionRound();
         return;
     }
-    
-    let candidates = [...touches];
-    const winners = [];
-    for (let i = 0; i < currentChallenge.n; i++) {
-        const randIndex = Math.floor(Math.random() * candidates.length);
-        winners.push(candidates[randIndex]);
-        candidates.splice(randIndex, 1);
-    }
-    
-    const winnerIds = new Set(winners.map(w => w.id));
-    
-    document.querySelectorAll('.finger').forEach(f => {
-        const fingerId = parseInt(f.dataset.id);
-        if (winnerIds.has(fingerId)) {
-            f.classList.add('winner');
-        } else {
-            f.classList.add('loser');
-        }
-    });
 
-    document.getElementById('continueBtn').style.display = 'block';
     touchArea.removeEventListener('touchstart', handleTouch);
     touchArea.removeEventListener('touchmove', handleTouch);
     touchArea.removeEventListener('touchend', handleTouch);
+
+    const winnerIndex = Math.floor(Math.random() * touches.length);
+    const winner = touches[winnerIndex];
+    selectedProtagonists.push(winner);
+
+    document.querySelectorAll('.finger').forEach(f => {
+        const fingerId = parseInt(f.dataset.id);
+        f.classList.add(fingerId === winner.id ? 'winner' : 'loser');
+    });
+
+    if (selectedProtagonists.length < protagonistsToSelect) {
+        selectionActionBtn.textContent = translations[selectedLanguage].selectNextProt;
+        selectionActionBtn.onclick = runSingleSelectionRound;
+    } else {
+        selectionActionBtn.textContent = translations[selectedLanguage].continue;
+        selectionActionBtn.onclick = nextRound;
+    }
+    selectionActionBtn.style.display = 'block';
 }
 
-function handleTouch(e) {
-    e.preventDefault();
-    updateTouches(e.touches);
-}
-
-touchArea.addEventListener('touchstart', handleTouch, {passive: false});
-touchArea.addEventListener('touchmove', handleTouch, {passive: false});
-touchArea.addEventListener('touchend', handleTouch, {passive: false});
-
-// Initialisation
-selectLanguage('fr');
-updateStartButton();
-
+// --- INITIALISATION DU JEU ---
+document.addEventListener('DOMContentLoaded', () => {
+    selectLanguage('fr');
+    updateStartButton();
+});
 </script>
 </body>
 </html>
