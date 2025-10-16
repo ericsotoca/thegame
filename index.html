@@ -5,15 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Jeu de Défis Consentis v6 - Multilingue</title>
 <style>
-    /* ═══════════════════════════════════════════════════════════════
-       STYLES GLOBAUX
-       ═══════════════════════════════════════════════════════════════ */
     *{margin:0;padding:0;box-sizing:border-box}
     body{font-family:'Segoe UI',sans-serif;background:linear-gradient(135deg,#667eea,#764ba2);min-height:100vh;display:flex;justify-content:center;align-items:center;padding:10px;touch-action:none;overflow:hidden}
     .container{background:#fff;border-radius:15px;padding:20px;max-width:500px;width:100%;box-shadow:0 5px 20px rgba(0,0,0,.3);position:relative}
-    /* ═══════════════════════════════════════════════════════════════
-       BOUTON RETOUR ACCUEIL
-       ═══════════════════════════════════════════════════════════════ */
     #homeBtn {
         position: fixed;
         top: 15px;
@@ -27,7 +21,7 @@
         font-size: 1.5em;
         cursor: pointer;
         z-index: 1000;
-        display: none; /* Caché par défaut, géré par JS */
+        display: none;
         align-items: center;
         justify-content: center;
         box-shadow: 0 3px 10px rgba(0,0,0,0.2);
@@ -35,13 +29,7 @@
         padding: 0;
         margin: 0;
     }
-    #homeBtn:hover {
-        transform: scale(1.1);
-        background: white;
-    }
-    /* ═══════════════════════════════════════════════════════════════
-       BOUTON SÉLECTION PROTAGONISTE
-       ═══════════════════════════════════════════════════════════════ */
+    #homeBtn:hover { transform: scale(1.1); background: white; }
     #selectProtagonistBtn {
         position: fixed;
         bottom: 15px;
@@ -63,13 +51,7 @@
         padding: 0;
         margin: 0;
     }
-    #selectProtagonistBtn:hover {
-        transform: scale(1.1);
-        background: white;
-    }
-    /* ═══════════════════════════════════════════════════════════════
-       DÉCOMPTE VISIBLE
-       ═══════════════════════════════════════════════════════════════ */
+    #selectProtagonistBtn:hover { transform: scale(1.1); background: white; }
     .countdown-display {
         position: absolute;
         top: 50%;
@@ -82,9 +64,6 @@
         z-index: 1000;
         pointer-events: none;
     }
-    /* ═══════════════════════════════════════════════════════════════
-       ÉLÉMENTS D'INTERFACE COMMUNS
-       ═══════════════════════════════════════════════════════════════ */
     h1{color:#667eea;text-align:center;margin-bottom:15px;font-size:1.5em}
     .screen{display:none}
     .screen.active{display:block}
@@ -95,9 +74,6 @@
     .info{text-align:center;color:#666;margin-top:10px;font-size:.8em}
     .button-group { display: flex; gap: 10px; }
     .button-group button { flex: 1; }
-    /* ═══════════════════════════════════════════════════════════════
-       ÉCRAN DE CONFIGURATION (SETUP)
-       ═══════════════════════════════════════════════════════════════ */
     .language-selector{display:flex;gap:8px;justify-content:center;margin-bottom:15px}
     .language-option{width:35px;height:35px;border:2px solid #e0e0e0;border-radius:50%;cursor:pointer;transition:all .2s;background:#fff;display:flex;align-items:center;justify-content:center}
     .language-option:hover{border-color:#667eea;transform:scale(1.1)}
@@ -115,9 +91,6 @@
     .intensity-icon{font-size:1.3em}
     .intensity-name{position:absolute;bottom:-20px;left:50%;transform:translateX(-50%);font-size:.7em;color:#667eea;opacity:0;transition:opacity .2s}
     .intensity-option:hover .intensity-name{opacity:1}
-    /* ═══════════════════════════════════════════════════════════════
-       ÉCRANS DE JEU (DÉFI, VOTE, RÉSULTAT)
-       ═══════════════════════════════════════════════════════════════ */
     .challenge-card{background:linear-gradient(135deg,#f093fb,#f5576c);color:#fff;padding:20px;border-radius:8px;text-align:center;margin:15px 0;font-size:1.1em;min-height:120px;display:flex;align-items:center;justify-content:center}
     .consent-options{display:flex;gap:8px;margin-top:15px}
     .consent-btn{flex:1;padding:12px;font-size:14px;border-radius:6px;color:white!important}
@@ -129,9 +102,6 @@
     .result-accepted{background:linear-gradient(135deg,#81fbb8,#28c76f);color:#fff}
     .result-refused{background:linear-gradient(135deg,#f8_8_3_8_6,#ea5455);color:#fff}
     .counter{font-size:1.8em;font-weight:700;color:#667eea;text-align:center;margin:10px 0}
-    /* ═══════════════════════════════════════════════════════════════
-       ÉCRAN DE SÉLECTION
-       ═══════════════════════════════════════════════════════════════ */
     .touch-area{position:relative;width:100%;height:350px;background:#f0f0f0;border-radius:8px;margin:15px 0;overflow:hidden}
     .finger{position:absolute;width:80px;height:80px;border-radius:50%;transform:translate(-50%,-50%);display:flex;align-items:center;justify-content:center;color:white;font-size:2rem;font-weight:bold;pointer-events:none;transition:all .3s ease;box-shadow:0 4px 15px rgba(0,0,0,.3);background:#FF6B6B}
     .finger.loser{opacity:.5;background:#FF6B6B!important}
@@ -238,9 +208,9 @@ const translations = {
     refuseBtn: "✗ Refuser",
     challengeAccepted: "🎉 DÉFI ACCEPTÉ ! 🎉",
     allAgree: "Tout le monde est d'accord.",
-    challengeRefused: "DÉFI REFUSÉ",
+    challengeRefused: "❌ DÉFI REFUSÉ ❌",
     someoneRefused: "Au moins une personne a refusé.",
-    consentNeeded: "Le consentement de tous est requis.",
+    consentNeeded: "Le consentement de tous est requis pour ce défi.",
     challengeToComplete: "Défi à réaliser :",
     nextChallenge: "Prochain Défi",
     newGame: "Nouvelle Partie",
@@ -275,9 +245,9 @@ const translations = {
     refuseBtn: "✗ Refuse",
     challengeAccepted: "🎉 CHALLENGE ACCEPTED! 🎉",
     allAgree: "Everyone agreed.",
-    challengeRefused: "CHALLENGE REFUSED",
+    challengeRefused: "❌ CHALLENGE REFUSED ❌",
     someoneRefused: "At least one person refused.",
-    consentNeeded: "Full consent from everyone is required.",
+    consentNeeded: "Full consent from everyone is required for this challenge.",
     challengeToComplete: "Challenge to perform:",
     nextChallenge: "Next Challenge",
     newGame: "New Game",
@@ -312,9 +282,9 @@ const translations = {
     refuseBtn: "✗ Recusar",
     challengeAccepted: "🎉 DESAFIO ACEITE! 🎉",
     allAgree: "Todos concordaram.",
-    challengeRefused: "DESAFIO RECUSADO",
+    challengeRefused: "❌ DESAFIO RECUSADO ❌",
     someoneRefused: "Pelo menos uma pessoa recusou.",
-    consentNeeded: "É necessário o consentimento de todos.",
+    consentNeeded: "É necessário o consentimento de todos para este desafio.",
     challengeToComplete: "Desafio a realizar:",
     nextChallenge: "Próximo Desafio",
     newGame: "Novo Jogo",
@@ -404,7 +374,6 @@ function updateStartButton() {
 
 function showScreen(screenId) {
     document.querySelectorAll('.screen').forEach(screen => screen.classList.toggle('active', screen.id === screenId));
-
     const homeBtn = document.getElementById('homeBtn');
     const selectProtagonistBtn = document.getElementById('selectProtagonistBtn');
     if (screenId === 'setupScreen') {
@@ -455,9 +424,22 @@ function vote(accepted) {
     showScreen('resultScreen');
     const resultDisplay = document.getElementById('resultDisplay');
     resultDisplay.className = `result-card ${allAccepted ? 'result-accepted' : 'result-refused'}`;
-    resultDisplay.innerHTML = allAccepted
-      ? `<h3>${translations[selectedLanguage].challengeAccepted}</h3><p>${translations[selectedLanguage].allAgree}</p><hr style="width:50%;margin:10px auto;border-color:rgba(255,255,255,0.5)"><p><strong>${translations[selectedLanguage].challengeToComplete}</strong><br>${currentChallenge.t}</p>`
-      : `<h3>${translations[selectedLanguage].challengeRefused}</h3><p>${translations[selectedLanguage].someoneRefused}</p><p>${translations[selectedLanguage].consentNeeded}</p>`;
+
+    if (allAccepted) {
+      resultDisplay.innerHTML = `
+        <h3>${translations[selectedLanguage].challengeAccepted}</h3>
+        <p>${translations[selectedLanguage].allAgree}</p>
+        <hr style="width:50%;margin:10px auto;border-color:rgba(255,255,255,0.5)">
+        <p><strong>${translations[selectedLanguage].challengeToComplete}</strong><br>${currentChallenge.t}</p>
+      `;
+    } else {
+      resultDisplay.innerHTML = `
+        <h3>${translations[selectedLanguage].challengeRefused}</h3>
+        <p style="font-size:1.2em;color:#ffeb3b;text-shadow:1px 1px 2px #000;">⚠ ${translations[selectedLanguage].someoneRefused}</p>
+        <p style="font-weight:bold;color:white;">${translations[selectedLanguage].consentNeeded}</p>
+        <p style="font-style:italic;opacity:0.9;color:white;">"${currentChallenge.t}"</p>
+      `;
+    }
 
     const needsSelection = allAccepted && currentChallenge && currentChallenge.n > 0;
     document.getElementById('selectProtBtn').style.display = needsSelection ? 'block' : 'none';
@@ -578,19 +560,23 @@ function renderFingers() {
 function startSelectionCountdown() {
     document.getElementById('selectionInstruction').textContent = translations[selectedLanguage].selectionInstrInProgress;
     let count = 5;
+    if (countdownDisplay) {
+        countdownDisplay.remove();
+    }
     countdownDisplay = document.createElement('div');
     countdownDisplay.className = 'countdown-display';
     touchArea.appendChild(countdownDisplay);
+
     countdownTimer = setInterval(() => {
         countdownDisplay.textContent = count;
-        count--;
-        if (count < 0) {
+        if (count <= 0) {
             clearInterval(countdownTimer);
             countdownTimer = null;
             countdownDisplay.remove();
             countdownDisplay = null;
             selectProtagonist();
         }
+        count--;
     }, 1000);
 }
 
@@ -611,14 +597,12 @@ function selectProtagonist() {
         f.classList.add(fingerId === winner.id ? 'winner' : 'loser');
     });
 
-    // Si on a sélectionné tous les protagonistes nécessaires
     if (selectedProtagonists.length >= protagonistsToSelect) {
         selectionActionBtnGroup.style.display = 'none';
         nextRound();
         return;
     }
 
-    // Sinon, on propose soit de sélectionner un autre protagoniste, soit de passer à un nouveau défi
     selectAnotherProtagonistBtn.onclick = runSingleSelectionRound;
     continueToNextChallengeBtn.onclick = nextRound;
     selectAnotherProtagonistBtn.style.display = 'block';
