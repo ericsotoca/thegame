@@ -93,6 +93,8 @@
     button:disabled{background:#ccc;cursor:not-allowed;transform:none;box-shadow:none}
     .instruction{text-align:center;font-size:1em;color:#666;margin:15px 0;padding:10px;background:#f5f5f5;border-radius:6px}
     .info{text-align:center;color:#666;margin-top:10px;font-size:.8em}
+    .button-group { display: flex; gap: 10px; }
+    .button-group button { flex: 1; }
     /* ═══════════════════════════════════════════════════════════════
        ÉCRAN DE CONFIGURATION (SETUP)
        ═══════════════════════════════════════════════════════════════ */
@@ -190,7 +192,10 @@
   <div class="screen" id="selectionScreen">
     <div class="instruction" id="selectionInstruction"></div>
     <div class="touch-area" id="touchArea"></div>
-    <button id="selectionActionBtn" style="display:none"></button>
+    <div id="selectionActionBtnGroup" class="button-group" style="display:none">
+      <button id="selectAnotherProtagonistBtn" style="display:none"></button>
+      <button id="continueToNextChallengeBtn" style="display:none"></button>
+    </div>
   </div>
   <div class="info" id="infoConsent"></div>
 </div>
@@ -209,8 +214,9 @@ let countdownDisplay = null;
 let protagonistsToSelect = 0;
 let selectedProtagonists = [];
 const touchArea = document.getElementById('touchArea');
-const selectionActionBtn = document.getElementById('selectionActionBtn');
-const selectProtagonistBtn = document.getElementById('selectProtagonistBtn');
+const selectionActionBtnGroup = document.getElementById('selectionActionBtnGroup');
+const selectAnotherProtagonistBtn = document.getElementById('selectAnotherProtagonistBtn');
+const continueToNextChallengeBtn = document.getElementById('continueToNextChallengeBtn');
 // --- DONNÉES DU JEU (TRADUCTIONS & DÉFIS) ---
 const translations = {
   fr: {
@@ -246,7 +252,9 @@ const translations = {
     selectProtagonistOf: "Sélection du protagoniste {current} sur {total}",
     selectNextProt: "Sélectionner le suivant",
     continue: "Continuer",
-    minPlayersForSelection: "Il faut au moins 1 doigt sur l'écran !"
+    minPlayersForSelection: "Il faut au moins 1 doigt sur l'écran !",
+    selectAnotherProtagonist: "Autre protagoniste",
+    continueToNextChallenge: "Nouveau défi"
   },
   en: {
     title: "🎭 Consent Challenge Game",
@@ -281,7 +289,9 @@ const translations = {
     selectProtagonistOf: "Selecting protagonist {current} of {total}",
     selectNextProt: "Select Next",
     continue: "Continue",
-    minPlayersForSelection: "At least 1 finger is required on screen!"
+    minPlayersForSelection: "At least 1 finger is required on screen!",
+    selectAnotherProtagonist: "Another Protagonist",
+    continueToNextChallenge: "Next Challenge"
   },
   pt: {
     title: "🎭 Jogo de Desafios Consentidos",
@@ -316,7 +326,9 @@ const translations = {
     selectProtagonistOf: "A selecionar o protagonista {current} de {total}",
     selectNextProt: "Selecionar o Próximo",
     continue: "Continuar",
-    minPlayersForSelection: "É necessário pelo menos 1 dedo no ecrã!"
+    minPlayersForSelection: "É necessário pelo menos 1 dedo no ecrã!",
+    selectAnotherProtagonist: "Outro Protagonista",
+    continueToNextChallenge: "Próximo Desafio"
   }
 };
 const challenges = {
@@ -362,6 +374,8 @@ function updateInterface() {
   document.getElementById('newGameBtn').textContent = t.newGame;
   document.getElementById('infoConsent').textContent = t.infoConsent;
   document.getElementById('selectProtBtn').textContent = t.selectProt;
+  selectAnotherProtagonistBtn.textContent = t.selectAnotherProtagonist;
+  continueToNextChallengeBtn.textContent = t.continueToNextChallenge;
 }
 function selectIntensity(level) {
   selectedIntensity = level;
@@ -497,7 +511,7 @@ function runSingleSelectionRound() {
     document.getElementById('selectionInstruction').textContent = instructionText;
 
     touchArea.innerHTML = '';
-    selectionActionBtn.style.display = 'none';
+    selectionActionBtnGroup.style.display = 'none';
     touchArea.addEventListener('touchstart', handleTouch, {passive: false});
     touchArea.addEventListener('touchmove', handleTouch, {passive: false});
     touchArea.addEventListener('touchend', handleTouch, {passive: false});
@@ -576,14 +590,20 @@ function selectProtagonist() {
         const fingerId = parseInt(f.dataset.id);
         f.classList.add(fingerId === winner.id ? 'winner' : 'loser');
     });
-    if (selectedProtagonists.length < protagonistsToSelect) {
-        selectionActionBtn.textContent = translations[selectedLanguage].selectNextProt;
-        selectionActionBtn.onclick = runSingleSelectionRound;
-    } else {
-        selectionActionBtn.textContent = translations[selectedLanguage].continue;
-        selectionActionBtn.onclick = nextRound;
+
+    // Si on a sélectionné tous les protagonistes nécessaires
+    if (selectedProtagonists.length >= protagonistsToSelect) {
+        selectionActionBtnGroup.style.display = 'none';
+        nextRound();
+        return;
     }
-    selectionActionBtn.style.display = 'block';
+
+    // Sinon, on propose soit de sélectionner un autre protagoniste, soit de passer à un nouveau défi
+    selectAnotherProtagonistBtn.onclick = runSingleSelectionRound;
+    continueToNextChallengeBtn.onclick = nextRound;
+    selectAnotherProtagonistBtn.style.display = 'block';
+    continueToNextChallengeBtn.style.display = 'block';
+    selectionActionBtnGroup.style.display = 'flex';
 }
 // --- INITIALISATION DU JEU ---
 document.addEventListener('DOMContentLoaded', () => {
